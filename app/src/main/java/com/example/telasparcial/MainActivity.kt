@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
@@ -43,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +81,8 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
-                    Column(modifier = Modifier.padding(innerPadding)) {
+                    Column(modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState())
+                    ) {
                         SearchBar()
                         Spacer(modifier = Modifier.height(5.dp))
                         FavoriteContacts()
@@ -94,11 +98,11 @@ class MainActivity : ComponentActivity() {
 
 // Composable genérico para os botões da Bottom Bar
 @Composable
-fun BottomButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
+fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier
-            .size(70.dp, 80.dp)
+            .size(90.dp)
             .padding(10.dp),
         shape = ButtonDefaults.filledTonalShape
     ) {
@@ -288,6 +292,442 @@ private fun ContactsCards() {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 40.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato1",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+                modifier = Modifier
+                    .size(width = 190.dp, height = 125.dp)
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 5.dp, top = 5.dp)
+                    )
+                    Text(
+                        text = "Contato2",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row {
+                    Text(
+                        "(99)9999-9999",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
     }
 }
 @Preview
