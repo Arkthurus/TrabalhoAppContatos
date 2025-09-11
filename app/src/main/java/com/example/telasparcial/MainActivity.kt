@@ -149,7 +149,6 @@ fun BottomButtonCentral(context: Context) {
 
 @Composable
 fun BottomButtonEsquerda(context: Context) {
-
     Column {
         Button(
             modifier = Modifier
