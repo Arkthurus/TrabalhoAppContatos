@@ -1,24 +1,14 @@
 package com.example.telasparcial
 
-import android.R
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.text.style.BackgroundColorSpan
-import android.util.Log
-import android.view.Surface
-import android.widget.Button
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
@@ -39,12 +28,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -56,10 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,19 +52,39 @@ import com.example.telasparcial.ui.theme.TelasParcialTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             TelasParcialTheme {
-                Scaffold {
-                    var context = LocalContext.current
-                    Column(modifier = Modifier.padding(it)) {
+                // O Scaffold principal que define a estrutura da tela
+                Scaffold(
+                    bottomBar = {
+                        // A sua barra de navegação está aqui, fora da função BottomBar()
+                        Surface(
+                            modifier = Modifier
+                                .height(80.dp)
+                                .fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Buttons da sua bottom bar
+                                BottomButton(Icons.Default.Call, onClick = { /* Ação do botão */ })
+                                BottomButton(Icons.Default.Menu, onClick = { /* Ação do botão */ })
+                                BottomButton(Icons.Default.DateRange, onClick = {})
+                            }
+                        }
+                    }
+                ) { innerPadding ->
+                    // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
+                    Column(modifier = Modifier.padding(innerPadding)) {
                         SearchBar()
                         Spacer(modifier = Modifier.height(5.dp))
                         FavoriteContacts()
                         Spacer(modifier = Modifier.height(10.dp))
                         RecentContactsList()
                         ContactsCards()
-                        BottomBar(context)
                     }
                 }
             }
@@ -88,118 +92,52 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Composable genérico para os botões da Bottom Bar
 @Composable
-fun BottomBar(context: Context) {
+fun BottomButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .size(70.dp, 80.dp)
+            .padding(10.dp),
+        shape = ButtonDefaults.filledTonalShape
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(40.dp)
+        )
+    }
+}
 
-    Scaffold(
-        bottomBar = {
-            Surface(
+// Aqui você pode manter suas outras funções composable
+@Composable
+fun SearchBar() {
+    var contactName by remember { mutableStateOf("Pesquisar") }
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextField(
                 modifier = Modifier
-                    .height(80.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceVariant
+                    .weight(1f) // Usa o peso para ocupar o espaço restante
+                    .padding(end = 5.dp),
+                value = contactName,
+                onValueChange = { contactName = it }
+            )
+            Button(
+                onClick = { /* Ação de pesquisa */ },
+                modifier = Modifier.size(60.dp) // Ajusta o tamanho do botão
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    BottomButtonEsquerda(context)
-                    BottomButtonCentral(context)
-                    BottomButtonDireita(context)
-                }
-            }
-        },
-        content = { innerPadding ->
-            // Aqui vai o conteúdo principal da tela
-            // Você pode usar innerPadding para evitar sobreposição
-            Box(modifier = Modifier.padding(innerPadding)) {
-                // Conteúdo da tela
+                Icon(Icons.Default.Search, contentDescription = "Pesquisar")
             }
         }
-    )
-}
-
-
-@Composable
-fun BottomButtonCentral(context: Context) {
-
-    Column {
-        Button(
-            modifier = Modifier
-                .width(70.dp)
-                .height(80.dp)
-                .padding(
-                    top = 15.dp,
-                    end = 5.dp,
-                    bottom = 10.dp
-                ),
-            shape = ButtonDefaults.filledTonalShape,
-            onClick = {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
-            }) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "",
-                modifier = Modifier.size(70.dp)
-            )
-        }
     }
 }
 
-@Composable
-fun BottomButtonEsquerda(context: Context) {
-
-    Column {
-        Button(
-            modifier = Modifier
-                .width(70.dp)
-                .height(80.dp)
-                .padding(
-                    top = 15.dp,
-                    end = 5.dp,
-                    bottom = 10.dp
-                ),
-            shape = ButtonDefaults.filledTonalShape,
-            onClick = {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
-            }) {
-            Icon(
-                imageVector = Icons.Default.Call,
-                contentDescription = "",
-                modifier = Modifier.size(70.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomButtonDireita(context : Context) {
-
-    Column {
-        Button(
-            modifier = Modifier
-                .width(70.dp)
-                .height(80.dp)
-                .padding(
-                    top = 15.dp,
-                    end = 5.dp,
-                    bottom = 10.dp
-                ),
-            shape = ButtonDefaults.filledTonalShape,
-            onClick = {
-                val intent = Intent(context, ListarContatos::class.java)
-                context.startActivity(intent)
-            }) {
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = "",
-                modifier = Modifier.size(70.dp)
-            )
-        }
-    }
-}
 @Preview
 @Composable
 private fun FavoriteContacts() {
@@ -210,18 +148,14 @@ private fun FavoriteContacts() {
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(
-                start = 22.dp,
-                end = 20.dp
-            )
+            .padding(start = 22.dp, end = 20.dp)
     ) {
         Column {
-            Row { Text(
+            Text(
                 text = "Favoritos",
-                modifier = Modifier
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
-            )}
+            )
             Row {
                 Spacer(modifier = Modifier.width(15.dp))
                 Icon(
@@ -256,8 +190,6 @@ private fun FavoriteContacts() {
                         .padding(start = 10.dp, bottom = 10.dp)
                 )
                 Spacer(modifier = Modifier.width(20.dp))
-
-
             }
         }
     }
@@ -270,16 +202,14 @@ private fun RecentContactsList() {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
         ),
-        modifier = Modifier
-            .size(width = 400.dp, height = 300.dp)
-    ){
+        modifier = Modifier.size(width = 400.dp, height = 300.dp)
+    ) {
         Column {
-           Text(
+            Text(
                 text = "Recentes",
-                modifier = Modifier
-                    .padding(start = 35.dp),
+                modifier = Modifier.padding(start = 35.dp),
                 textAlign = TextAlign.Center,
-           )
+            )
             RecentContactCard()
             RecentContactCard()
             RecentContactCard()
@@ -316,8 +246,7 @@ private fun ContactsCards() {
                     )
                     Text(
                         text = "Contato1",
-                        modifier = Modifier
-                            .padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -326,7 +255,6 @@ private fun ContactsCards() {
                         "(99)9999-9999",
                         modifier = Modifier.padding(start = 15.dp)
                     )
-
                 }
             }
             Spacer(modifier = Modifier.width(20.dp))
@@ -348,8 +276,7 @@ private fun ContactsCards() {
                     )
                     Text(
                         text = "Contato2",
-                        modifier = Modifier
-                            .padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -358,135 +285,44 @@ private fun ContactsCards() {
                         "(99)9999-9999",
                         modifier = Modifier.padding(start = 15.dp)
                     )
-
                 }
             }
         }
     }
 }
-
-@Preview
-@Composable
-fun Button() {
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-    ) {
-        Column {
-//            Text("Contador: $contador")
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 15.dp,
-                        end = 5.dp
-                    ),
-                shape = ButtonDefaults.filledTonalShape,
-                onClick = {
-                    Log.d("Eae Delicia", "Vc se Cadastrou")
-                }) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "",
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-        }
-
-    }
-}
-
-@Preview
-@Composable
-fun SearchBar() {
-
-    var contactName by remember {
-        mutableStateOf("Pesquisar")
-    }
-
-    Surface(
-        modifier = Modifier
-            .width(600.dp)
-            .height(100.dp)
-            .padding(
-                top = 10.dp,
-                bottom = 10.dp,
-                start = 10.dp,
-                end = 10.dp
-            )
-    ) {
-        Row() {
-            TextField(
-
-                modifier = Modifier
-                    .padding(
-                        top = 10.dp,
-                        bottom = 10.dp,
-                        start = 15.dp,
-                        end = 5.dp
-                    ),
-                value = contactName,
-                onValueChange = {
-                    contactName = it
-                }
-            )
-            Button()
-        }
-    }
-
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview
 @Composable
 fun RecentContactCard() {
-
-        Column(modifier = Modifier.padding()) {
-
-            Surface(
+    Column(modifier = Modifier.padding()) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(top = 5.dp, bottom = 5.dp, start = 22.dp)
+                .border(shape = CircleShape, border = BorderStroke(5.dp, color = Color.LightGray))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(
-                        top = 5.dp,
-                        bottom = 5.dp,
-                        start = 22.dp
-
-                    )
-                    .border(
-                        shape = CircleShape,
-                        border = BorderStroke(5.dp, color = Color.LightGray),
-
-                        )
+                    .fillMaxSize()
+                    .background(shape = CircleShape, color = Color.LightGray)
+                    .padding(start = 5.dp),
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    modifier = Modifier
-                        .width(300.dp)
-                        .height(5.dp)
-                        .background(shape = CircleShape, color = Color.LightGray)
-                        .padding(start = 5.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "",
-                            modifier = Modifier.size(30.dp)
-
-                        )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(
-                            text = "NomeContato",
-                            modifier = Modifier.padding(bottom = 15.dp, start = 15.dp, top = 10.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = "NomeContato",
+                        modifier = Modifier.padding(bottom = 15.dp, start = 15.dp, top = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
             }
         }
-
+    }
 }
