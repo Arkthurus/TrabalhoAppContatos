@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.telasparcial.ui.theme.TelasParcialTheme
 
 class MainActivity : ComponentActivity() {
@@ -57,40 +58,48 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TelasParcialTheme {
-                // O Scaffold principal que define a estrutura da tela
-                Scaffold(
-                    bottomBar = {
-                        // A sua barra de navegação está aqui, fora da função BottomBar()
-                        Surface(
-                            modifier = Modifier
-                                .height(80.dp)
-                                .fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.surfaceVariant
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Buttons da sua bottom bar
-                                BottomButton(Icons.Default.Call, onClick = { /* Ação do botão */ })
-                                BottomButton(Icons.Default.Menu, onClick = { /* Ação do botão */ })
-                                BottomButton(Icons.Default.DateRange, onClick = {})
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
-                    Column(modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState())
+                AppNav()
+                TelaLista(navController = NavController())
+            }
+        }
+    }
+
+    @Composable
+    private fun TelaLista(navController : NavController) {
+        Scaffold(
+            bottomBar = {
+                // A sua barra de navegação está aqui, fora da função BottomBar()
+                Surface(
+                    modifier = Modifier
+                        .height(80.dp)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SearchBar()
-                        Spacer(modifier = Modifier.height(5.dp))
-                        FavoriteContacts()
-                        Spacer(modifier = Modifier.height(10.dp))
-                        RecentContactsList()
-                        ContactsCards()
+                        // Buttons da sua bottom bar
+                        BottomButton(Icons.Default.Call, onClick = { navController. })
+                        BottomButton(Icons.Default.Menu, onClick = { /* Ação do botão */ })
+                        BottomButton(Icons.Default.DateRange, onClick = {})
                     }
                 }
+            }
+        ) { innerPadding ->
+            // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                SearchBar()
+                Spacer(modifier = Modifier.height(5.dp))
+                FavoriteContacts()
+                Spacer(modifier = Modifier.height(10.dp))
+                RecentContactsList()
+                ContactsCards()
             }
         }
     }
