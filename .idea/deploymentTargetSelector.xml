@@ -13,7 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="ListarContatos">
+      <SelectionState runConfigName="TelaDiscagem">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
