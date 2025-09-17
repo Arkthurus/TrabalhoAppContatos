@@ -25,6 +25,9 @@ fun AppNav() {
                 }
             )
         }
+        composable("TabScreen"){
+            TabScreen(navController)
+        }
         composable(
             route = "TelaAddCtt/{numeroCtt}",
             arguments = listOf(navArgument("numeroCtt") { type = NavType.StringType })
@@ -44,13 +47,7 @@ fun AppNav() {
                 }
             )
         }
-//        composable("TelaQRCode") {
-//            // Tela de QRCode
-//            TelaQRCode(navController)
-//        }
-//        composable("TelaQRCodeScan") {
-//            // Tela de scanner de QRCode
-//            TelaQRCodeScan(navController)
-//        }
+        composable("meuCodigo") { TelaQR() }
+        composable("escanearCodigo") { TelaEscanearCodigo() }
     }
 }
