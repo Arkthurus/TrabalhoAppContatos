@@ -49,26 +49,7 @@ import androidx.navigation.NavController
 @Composable
 fun TelaLista(navController: NavController) {
     Scaffold(
-        bottomBar = {
-            // A sua barra de navegação está aqui, fora da função BottomBar()
-            Surface(
-                modifier = Modifier
-                    .height(80.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceVariant
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Buttons da sua bottom bar
-                    BottomButton(Icons.Default.Menu, onClick = {})
-                    BottomButton(Icons.Default.Call, onClick = {navController.navigate("TelaDiscar")})
-                    BottomButton(Icons.Default.DateRange, onClick = {})
-                }
-            }
-        }
+        bottomBar = {BottomBar(navController)}
     ) { innerPadding ->
         // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
         Column(

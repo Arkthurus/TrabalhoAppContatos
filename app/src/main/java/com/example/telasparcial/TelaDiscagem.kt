@@ -63,7 +63,7 @@ fun BottomBar(navController : NavController) {
             // Buttons da sua bottom bar
             BottomButton(Icons.Default.Menu, onClick = {navController.navigate("TelaLista")})
             BottomButton(Icons.Default.Call, onClick = {navController.navigate("TelaDiscar")})
-            BottomButton(Icons.Default.AccountCircle, onClick = {})
+            BottomButton(Icons.Default.AccountCircle, onClick = {navController.navigate("TabScreen")})
         }
     }
 }
