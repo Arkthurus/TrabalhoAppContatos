@@ -23,14 +23,12 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun AddCtt(initialPhoneNumber: String,
-           onSaveContact: (String, String) -> Unit
-) {
+fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
     // Estado para o campo de nome
     var name by remember { mutableStateOf("") }
 
     // O número de telefone é passado como um parâmetro
-    val phoneNumber by remember { mutableStateOf(initialPhoneNumber) }
+    val phoneNumber by remember { mutableStateOf(numeroCtt) }
 
     // A tela é um Column centralizada
     Column(
@@ -70,6 +68,7 @@ fun AddCtt(initialPhoneNumber: String,
         Button(
             onClick = {
                 // Chama a função de salvamento, passando o nome e o número
+                // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
                 onSaveContact(name, phoneNumber)
             },
             modifier = Modifier.fillMaxWidth()
@@ -78,15 +77,14 @@ fun AddCtt(initialPhoneNumber: String,
         }
     }
 }
-
 // Preview da tela para visualização no Android Studio
-@Preview(showBackground = true)
-@Composable
-fun AddContactScreenPreview() {
-    AddCtt(
-        initialPhoneNumber = "41998765432",
-        onSaveContact = { name, number ->
-            println("Contato salvo! Nome: $name, Número: $number")
-        }
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AddContactScreenPreview() {
+//    AddCtt(
+//        numeroCtt = "41998765432",
+//        onSaveContact = { name, number ->
+//            println("Contato salvo! Nome: $name, Número: $number")
+//        }
+//    )
+//}

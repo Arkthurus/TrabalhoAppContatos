@@ -1,17 +1,11 @@
 package com.example.telasparcial
 
-import android.service.autofill.OnClickAction
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 @Composable
 fun AppNav() {
@@ -21,83 +15,42 @@ fun AppNav() {
     NavHost(navController = navController, startDestination = "TelaLista") {
         composable("TelaLista") {
             // Passa o navController para a tela principal
-            Telalista(navController)
+            TelaLista(navController)
         }
         composable("TelaDiscar") {
-            // Passa o navController para a tela de discagem
-            TelaDiscagem(navController)
+            TelaDiscagem(
+                navController = navController,
+                onNavigateToAddCtt = { numeroCtt : String ->
+                    navController.navigate("TelaAddCtt/$numeroCtt")
+                }
+            )
         }
-        composable("TelaAddCtt") {
-            // Tela de adicionar contato
-            TelaAddCtt(navController)
-        }
-        composable("TelaQRCode") {
-            // Tela de QRCode
-            TelaQRCode(navController)
-        }
-        composable("TelaQRCodeScan") {
-            // Tela de scanner de QRCode
-            TelaQRCodeScan(navController)
-        }
-    }
-}
-@Composable
-fun Telalista(navController: NavController){
-    Button(
-        onClick = {
-            navController.navigate("TelaDiscar")
-        }
-    ) {
-        Text("Discagem")
-    }
-}
-@Composable
-fun TelaDiscagem(navController: NavController){
-    Button(
-        onClick = {
-            navController.navigate("TelaDiscar")
-        }
-    ) {
-        Text("Discagem")
-    }
-}
+        composable(
+            route = "TelaAddCtt/{numeroCtt}",
+            arguments = listOf(navArgument("numeroCtt") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
 
-// Em um novo arquivo, ou no mesmo, dependendo da sua organização
-@Composable
-fun TelaAddCtt(navController: NavController) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Tela Adicionar Contato")
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Voltar")
-        }
-    }
-}
+            // Chama a TelaAddCtt, passando o número e a função onSaveContact
+            AddCtt(
+                numeroCtt = numeroCtt,
+                onSaveContact = { name, number ->
+                    // Esta lambda é chamada quando o botão Salvar é clicado
+                    // Aqui você pode adicionar a lógica para salvar o contato em um banco de dados, etc.
+                    println("Contato a ser salvo: Nome: $name, Número: $number")
 
-@Composable
-fun TelaQRCode(navController: NavController) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Tela QR Code")
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Voltar")
+                    // Em seguida, voltamos para a tela anterior
+                    navController.popBackStack()
+                }
+            )
         }
-    }
-}
-
-@Composable
-fun TelaQRCodeScan(navController: NavController) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Tela QR Code Scan")
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Voltar")
-        }
+//        composable("TelaQRCode") {
+//            // Tela de QRCode
+//            TelaQRCode(navController)
+//        }
+//        composable("TelaQRCodeScan") {
+//            // Tela de scanner de QRCode
+//            TelaQRCodeScan(navController)
+//        }
     }
 }

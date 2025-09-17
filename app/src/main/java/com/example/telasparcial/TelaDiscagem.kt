@@ -32,24 +32,23 @@ import androidx.compose.runtime.*
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.filled.Call
+import androidx.navigation.NavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
 @Composable
-fun TelaDiscagem(){
+fun TelaDiscagem(navController: NavController, onNavigateToAddCtt: (String) -> Unit) {
     Scaffold(
-        bottomBar = {BottomBar()}
+        bottomBar = {BottomBar(navController)}
     ) {
         Column(modifier = Modifier.padding(top = 50.dp)
         ) {
-            Discagem()
+            Discagem(onNavigateToAddCtt)
         }
     }
 }
-@Preview
+
 @Composable
-fun BottomBar() {
+fun BottomBar(navController : NavController) {
     Surface(
         modifier = Modifier
             .height(80.dp)
@@ -62,33 +61,25 @@ fun BottomBar() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Buttons da sua bottom bar
-            BottomButton(Icons.Default.Menu, onClick = { /* Ação do botão */ })
-            BottomButton(Icons.Default.Call, onClick = { /* Ação do botão */ })
+            BottomButton(Icons.Default.Menu, onClick = {navController.navigate("TelaLista")})
+            BottomButton(Icons.Default.Call, onClick = {navController.navigate("TelaDiscar")})
             BottomButton(Icons.Default.AccountCircle, onClick = {})
         }
     }
 }
-
-@Preview
 @Composable
-fun Discagem() {
+fun Discagem(onNavigateToAddCtt: (String) -> Unit) {
     // Estado que guarda o número digitado
     var phoneNumber by remember { mutableStateOf("") }
 
     Surface(
-        modifier = Modifier
-
-            .padding(16.dp),
-
+        modifier = Modifier.padding(16.dp),
     ) {
-        // Usa a coluna para organizar os elementos verticalmente
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            // Linha para o texto e o botão de apagar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,7 +87,6 @@ fun Discagem() {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Exibe o número digitado
                 Text(
                     text = phoneNumber,
                     fontSize = 28.sp,
@@ -106,7 +96,6 @@ fun Discagem() {
                     textAlign = TextAlign.End
                 )
 
-                // Botão de apagar
                 IconButton(
                     onClick = {
                         if (phoneNumber.isNotEmpty()) {
@@ -124,11 +113,9 @@ fun Discagem() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Grid de botões numéricos
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Primeira linha (1,2,3)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     NumberButton("1", onClick = { phoneNumber += "1" })
                     NumberButton("2", onClick = { phoneNumber += "2" })
@@ -136,7 +123,6 @@ fun Discagem() {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Segunda linha (4,5,6)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     NumberButton("4", onClick = { phoneNumber += "4" })
                     NumberButton("5", onClick = { phoneNumber += "5" })
@@ -144,7 +130,6 @@ fun Discagem() {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Terceira linha (7,8,9)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     NumberButton("7", onClick = { phoneNumber += "7" })
                     NumberButton("8", onClick = { phoneNumber += "8" })
@@ -152,31 +137,26 @@ fun Discagem() {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Quarta linha (*,0,#)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     NumberButton("*", onClick = { phoneNumber += "*" })
                     NumberButton("0", onClick = { phoneNumber += "0" })
                     NumberButton("#", onClick = { phoneNumber += "#" })
                 }
-                Spacer(modifier = Modifier.height(40.dp)) // Espaço entre os botões numéricos e os de ação
+                Spacer(modifier = Modifier.height(40.dp))
 
-                // Quinta linha (Ligar, Adicionar Contato)
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    // Botão de Ligar
                     CallActionButton(
                         icon = Icons.Default.Call,
                         contentDescription = "Ligar",
-                        onClick = {
-                            // Ação do botão Ligar (pode ser implementada aqui)
-                        }
+                        onClick = { /* Ação do botão Ligar */ }
                     )
                     Spacer(modifier = Modifier.width(70.dp))
-                    // Botão de Adicionar Contato
                     CallActionButton(
                         icon = Icons.Default.AddCircle,
                         contentDescription = "Adicionar Contato",
                         onClick = {
-                            // Ação do botão Adicionar Contato (pode ser implementada aqui)
+                            // Chama a função de navegação, passando o número digitado
+                            onNavigateToAddCtt(phoneNumber)
                         }
                     )
                 }
