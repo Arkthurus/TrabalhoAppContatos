@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.newSingleThreadContext
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +128,10 @@ fun TelaQR() {
                 ) {
                     Icon(Icons.Default.Share, "compartilhar")
                     Spacer(Modifier.width(15.dp))
-                    Text("Compartilhar código QR", fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
+                    Text(
+                        "Compartilhar código QR",
+                        fontSize = TextUnit(value = 4.5f, TextUnitType.Em)
+                    )
                 }
             }
         }
@@ -137,10 +141,43 @@ fun TelaQR() {
 
 @Composable
 fun TelaEscanearCodigo() {
-    Row(
-        horizontalArrangement = Arrangement.Center
+    val context = LocalContext.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 25.dp)
+        ) {
+            Icon(Icons.Default.Share, "Icone share")
+            Text("Aponte sua câmera para o código QR de alguém!")
+        }
 
+        // Image by Daniel Harntanto: https://www.vecteezy.com/vector-art/9293275-qr-code-vector-for-website-symbol-icon-presentation
+        Image(
+            painter = painterResource(
+                R.drawable.vecteezy_qr_code_vector_for_website_symbol_icon_presentation_9293275
+            ),
+            "Scan QR Image"
+        )
+
+        Button(
+            onClick = {
+                Toast.makeText(
+                    context,
+                    "Código escaneado! (Dummy)",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth(.85f)
+                .padding(top = 100.dp)
+                .height(80.dp)
+        ) {
+            Text("Escanear Código", style = MaterialTheme.typography.headlineSmall)
+        }
     }
 }
 
