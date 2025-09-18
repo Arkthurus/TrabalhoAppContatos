@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contatos")
 data class Contatos(
-    val nome   : String,
     @PrimaryKey(autoGenerate = true)
-    val numero : String
+    val id      : Int,
+    val nome    : String,
+    val numero  : String
 )

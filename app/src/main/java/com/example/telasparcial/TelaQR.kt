@@ -1,6 +1,7 @@
 package com.example.telasparcial
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,8 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -42,7 +47,7 @@ fun TabScreen(navController: NavController) {
     val tabNavController = rememberNavController()
     var selectedTabIndex by remember { mutableStateOf(0) }
     Scaffold(
-        bottomBar = {BottomBar(navController)}
+        bottomBar = { BottomBar(navController) }
     ) {
         Column {
             PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
@@ -82,6 +87,8 @@ fun TabScreen(navController: NavController) {
 @Composable
 @Preview
 fun TelaQR() {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier
             .fillMaxHeight()
@@ -92,10 +99,36 @@ fun TelaQR() {
             Spacer(Modifier.height(10.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Image(painter = painterResource(id = R.drawable.qr_code), contentDescription = null)
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 150.dp)
+            ) {
+                Button(
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "Código copiado para a área de transferência",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.85f)
+                        .height(100.dp)
+                        .align(Alignment.BottomCenter)
+                        .padding(15.dp)
+                ) {
+                    Icon(Icons.Default.Share, "compartilhar")
+                    Spacer(Modifier.width(15.dp))
+                    Text("Compartilhar código QR", fontSize = TextUnit(value = 4.5f, TextUnitType.Em))
+                }
             }
         }
     }
@@ -104,23 +137,10 @@ fun TelaQR() {
 
 @Composable
 fun TelaEscanearCodigo() {
-
-}
-
-@Composable
-fun TabButton(text: String = "Teste") {
-    Surface(
-        onClick = {},
-        modifier = Modifier
-            .width(190.dp)
-            .fillMaxHeight()
+    Row(
+        horizontalArrangement = Arrangement.Center
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text)
-        }
+
     }
 }
 
@@ -132,6 +152,7 @@ fun ProfileStats() {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(15.dp)
     ) {
         Image(
             Icons.Default.AccountCircle,
@@ -147,7 +168,8 @@ fun ProfileStats() {
                 Nome: Janeiro Fevereiro de Março Abril
                 Número: (99) 99999-9999
                 Email: Janeiro.fevereiro@março.abril
-            """.trimIndent()
+            """.trimIndent(),
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
