@@ -1,4 +1,4 @@
-package com.example.telasparcial
+package com.example.telasparcial.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -18,9 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,7 +46,7 @@ import androidx.navigation.NavController
 @Composable
 fun TelaLista(navController: NavController) {
     Scaffold(
-        bottomBar = {BottomBar(navController)}
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
         // O conteúdo principal da tela, usando o padding fornecido pelo Scaffold
         Column(

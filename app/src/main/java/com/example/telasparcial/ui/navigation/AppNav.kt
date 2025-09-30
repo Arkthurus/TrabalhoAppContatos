@@ -1,4 +1,4 @@
-package com.example.telasparcial
+package com.example.telasparcial.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -6,6 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.telasparcial.ui.screens.AddCtt
+import com.example.telasparcial.ui.screens.TabScreen
+import com.example.telasparcial.ui.screens.TelaDiscagem
+import com.example.telasparcial.ui.screens.TelaEscanearCodigo
+import com.example.telasparcial.ui.screens.TelaLista
+import com.example.telasparcial.ui.screens.TelaQR
 
 @Composable
 fun AppNav() {

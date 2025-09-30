@@ -1,4 +1,4 @@
-package com.example.telasparcial.components
+package com.example.telasparcial.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

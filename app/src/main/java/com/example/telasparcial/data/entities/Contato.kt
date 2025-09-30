@@ -1,4 +1,4 @@
-package com.example.telasparcial.BD
+package com.example.telasparcial.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package com.example.telasparcial
+package com.example.telasparcial.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
@@ -38,7 +37,7 @@ import androidx.navigation.NavController
 @Composable
 fun TelaDiscagem(navController: NavController, onNavigateToAddCtt: (String) -> Unit) {
     Scaffold(
-        bottomBar = {BottomBar(navController)}
+        bottomBar = { BottomBar(navController) }
     ) {
         Column(modifier = Modifier.padding(top = 50.dp)
         ) {
