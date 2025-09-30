@@ -8,7 +8,7 @@ import androidx.room.Query
 interface ContatosDAO{
 
     @Insert
-    fun addContato(contato : Contatos)
+    suspend fun SaveContact(contato : Contatos)
     @Query("SELECT * FROM contatos")
-    fun buscarTodos()      : List<Contatos>
+    suspend fun buscarTodos()      : List<Contatos>
 }

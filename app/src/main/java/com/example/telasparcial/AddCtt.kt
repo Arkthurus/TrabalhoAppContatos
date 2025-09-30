@@ -1,5 +1,7 @@
 package com.example.telasparcial
 
+import android.util.Log
+import android.webkit.WebViewDatabase
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +21,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.telasparcial.BD.ContatosDAO
+import com.example.telasparcial.BD.AppDataBase
+import com.example.telasparcial.BD.Contatos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -29,6 +38,12 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
 
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
+
+    val context = LocalContext.current
+
+    val db = AppDataBase.getDataBase(context)
+
+    val ContatosDAO = db.contatosDao()
 
     // A tela é um Column centralizada
     Column(
@@ -69,7 +84,16 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
             onClick = {
                 // Chama a função de salvamento, passando o nome e o número
                 // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
-                onSaveContact(name, phoneNumber)
+                if (name.isNotBlank() && phoneNumber.isNotBlank()){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            ContatosDAO.SaveContact(Contatos(nome = name, numero = phoneNumber))
+                        }catch (e: Exception){
+                            Log.e("Erro ao add contato", "Msg: ${e.message}")
+                        }
+                    }
+                    onSaveContact(name, phoneNumber)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
