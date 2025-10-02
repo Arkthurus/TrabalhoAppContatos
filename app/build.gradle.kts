@@ -61,4 +61,5 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
 }
