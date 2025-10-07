@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             TelasParcialTheme {
                 AppNav()
-
             }
         }
     }

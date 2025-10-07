@@ -1,7 +1,6 @@
 package com.example.telasparcial
 
 import android.util.Log
-import android.webkit.WebViewDatabase
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,15 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.example.telasparcial.BD.ContatosDAO
 import com.example.telasparcial.BD.AppDataBase
 import com.example.telasparcial.BD.Contatos
 import kotlinx.coroutines.CoroutineScope
@@ -87,7 +83,7 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
                 if (name.isNotBlank() && phoneNumber.isNotBlank()){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            ContatosDAO.SaveContact(Contatos(nome = name, numero = phoneNumber))
+                            ContatosDAO.saveContact(Contatos(nome = name, numero = phoneNumber))
                         }catch (e: Exception){
                             Log.e("Erro ao add contato", "Msg: ${e.message}")
                         }
