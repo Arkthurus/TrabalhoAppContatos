@@ -1,10 +1,11 @@
 package com.example.telasparcial
 
 import android.util.Log
-import android.webkit.WebViewDatabase
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,21 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -56,16 +48,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.telasparcial.BD.ContatosDAO
 import com.example.telasparcial.BD.AppDataBase
 import com.example.telasparcial.BD.Contatos
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -80,7 +68,7 @@ fun TelaLista(navController: NavController) {
                 .padding(innerPadding)
         ) {
             item{Spacer(modifier = Modifier.height(5.dp))}
-            item { FavoriteContacts() }
+            item { FavoriteContacts(navController) }
             item{Spacer(modifier = Modifier.height(10.dp))}
             item{RecentContactsList()}
             item{DuploCtt()}
@@ -136,9 +124,25 @@ fun SearchBar() {
     }
 }
 
-@Preview
 @Composable
-private fun FavoriteContacts() {
+private fun FavoriteContacts(navController: NavController) {
+
+    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+
+    val context     =             LocalContext.current
+
+    val db          = AppDataBase.getDataBase(context)
+
+    val ContatosDAO =                 db.contatosDao()
+
+    LaunchedEffect(Unit) {
+        try {
+            contatos = ContatosDAO.buscar4()
+        } catch (e: Exception) {
+            Log.e("Erro ao add contato", "Msg: ${e.message}")
+        }
+    }
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -154,44 +158,23 @@ private fun FavoriteContacts() {
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
             )
-            Row {
-                Spacer(modifier = Modifier.width(15.dp))
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(start = 10.dp, bottom = 10.dp)
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(start = 10.dp, bottom = 10.dp)
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(start = 10.dp, bottom = 10.dp)
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(start = 10.dp, bottom = 10.dp)
-                )
-                Spacer(modifier = Modifier.width(20.dp))
+            LazyRow{
+                    items(contatos) { contato ->
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle ,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(start = 10.dp, bottom = 10.dp)
+                                .clickable { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") }
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+                }
             }
         }
     }
-}
 
 @Preview
 @Composable
@@ -207,7 +190,7 @@ private fun RecentContactsList() {
 
     LaunchedEffect(Unit) {
         try {
-            contatos = ContatosDAO.buscarTodos()
+            contatos = ContatosDAO.buscar4()
         } catch (e: Exception) {
             Log.e("Erro ao add contato", "Msg: ${e.message}")
         }

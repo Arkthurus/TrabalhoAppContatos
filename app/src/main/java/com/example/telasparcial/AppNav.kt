@@ -15,7 +15,27 @@ fun AppNav() {
     NavHost(navController = navController, startDestination = "TelaLista") {
         composable("TelaLista") {
             // Passa o navController para a tela principal
-            TelaLista(navController)
+            TelaLista(navController,)
+        }
+        composable(
+            route = "TelaEdit/{nomeCtt}/{numeroCtt}/{idCtt}",
+            arguments = listOf(
+                navArgument("numeroCtt") { type = NavType.StringType },
+                navArgument("nomeCtt") { type = NavType.StringType },
+                navArgument("idCtt") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
+            val nomeCtt = backStackEntry.arguments?.getString("nomeCtt") ?: ""
+            val idCtt = backStackEntry.arguments?.getInt("idCtt") ?: ""
+
+            TelaEdit(
+                numeroCtt = numeroCtt,
+                nomeCtt = nomeCtt,
+                idCtt = id,
+                onNavigateToTelaEdit = {},
+                navController = navController
+            )
         }
         composable("TelaDiscar") {
             TelaDiscagem(
