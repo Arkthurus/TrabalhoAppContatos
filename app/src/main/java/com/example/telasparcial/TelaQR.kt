@@ -2,36 +2,43 @@ package com.example.telasparcial
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -39,7 +46,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.newSingleThreadContext
+import com.google.zxing.client.android.Intents.Scan
+import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,6 +152,14 @@ fun TelaQR() {
 @Composable
 fun TelaEscanearCodigo() {
     val context = LocalContext.current
+
+    val scanLauncher = rememberLauncherForActivityResult(contract = ScanContract()) { result ->
+        if (result.contents == null) {
+            Toast.makeText(context, "Escaneamento cancelado", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(context, "Resultado: " + result.contents, Toast.LENGTH_LONG).show()
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -165,11 +183,15 @@ fun TelaEscanearCodigo() {
 
         Button(
             onClick = {
-                Toast.makeText(
-                    context,
-                    "Código escaneado! (Dummy)",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val options = ScanOptions().apply {
+                    setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                    setPrompt("Aponte a câmera para um código QR!")
+                    setCameraId(0)
+                    setBeepEnabled(true)
+                    setBarcodeImageEnabled(true)
+                }
+
+                scanLauncher.launch(options)
             },
             modifier = Modifier
                 .fillMaxWidth(.85f)

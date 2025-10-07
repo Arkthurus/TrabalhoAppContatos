@@ -15,6 +15,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -62,4 +63,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.androidx.multidex)
 }
