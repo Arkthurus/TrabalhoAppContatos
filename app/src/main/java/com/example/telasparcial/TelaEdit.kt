@@ -85,12 +85,15 @@ fun TelaEdit(
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val contatoAtualizado = Contatos(id = id, nome = name, numero = phoneNumber)
+                            Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
                             contatosDAO.atualizarCtt(contatoAtualizado)
+                            withContext(Dispatchers.Main){
+                                navController.popBackStack()
+                            }
                         } catch (e: Exception) {
                             Log.e("Erro ao editar contato", "Msg: ${e.message}")
                         }
                     }
-                    navController.popBackStack()
                 }
             },
             modifier = Modifier.fillMaxWidth()

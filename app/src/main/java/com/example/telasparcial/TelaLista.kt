@@ -55,7 +55,6 @@ import com.example.telasparcial.BD.AppDataBase
 import com.example.telasparcial.BD.Contatos
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
-
 @Composable
 fun TelaLista(navController: NavController) {
     Scaffold(
@@ -356,12 +355,12 @@ fun RecentContactCard(nome: String) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(40.dp).padding(top = 10.dp)
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
                     Text(
                         text = nome,
-                        modifier = Modifier.padding(bottom = 15.dp, start = 15.dp, top = 10.dp),
+                        modifier = Modifier.padding(bottom = 15.dp, top = 10.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
