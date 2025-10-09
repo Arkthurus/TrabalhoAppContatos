@@ -7,7 +7,7 @@ import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.entities.GrupoContato
 
-data class GrupoContatoPojo(
+data class GrupoComContatos(
     @Embedded val grupo: Grupo,
     @Relation(
         parentColumn = "id",
