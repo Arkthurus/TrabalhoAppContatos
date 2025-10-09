@@ -1,10 +1,11 @@
-package com.example.telasparcial.BD
+package com.example.telasparcial.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.telasparcial.data.entities.Contatos
 
 @Dao
 interface ContatosDAO {

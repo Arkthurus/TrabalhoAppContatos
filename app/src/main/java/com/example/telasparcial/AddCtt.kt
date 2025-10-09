@@ -20,8 +20,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import com.example.telasparcial.BD.AppDataBase
-import com.example.telasparcial.BD.Contatos
+import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.entities.Contatos
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

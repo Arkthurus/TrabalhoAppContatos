@@ -50,9 +50,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.telasparcial.BD.ContatosDAO
-import com.example.telasparcial.BD.AppDataBase
-import com.example.telasparcial.BD.Contatos
+import com.example.telasparcial.data.dao.ContatosDAO
+import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.entities.Contatos
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
