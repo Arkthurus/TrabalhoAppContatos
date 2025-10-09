@@ -15,8 +15,8 @@ interface ContatosDAO {
     @Query("SELECT * FROM Contatos")
     suspend fun buscarTodos(): List<Contato>
 
-    @Query("SELECT * FROM Contatos LIMIT 4")
-    suspend fun buscar4(): List<Contato>
+    @Query("SELECT * FROM Contatos LIMIT :quantidade")
+    suspend fun buscar(quantidade: Int): List<Contato>
 
     @Delete
     suspend fun deletarCtt(contato: Contato)
