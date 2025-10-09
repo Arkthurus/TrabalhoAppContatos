@@ -5,23 +5,22 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.telasparcial.data.entities.Contatos
+import com.example.telasparcial.data.entities.Contato
 
 @Dao
 interface ContatosDAO {
-
     @Insert
-    suspend fun saveContact(contato: Contatos)
+    suspend fun salvarContato(contato: Contato)
 
-    @Query("SELECT * FROM contatos")
-    suspend fun buscarTodos(): List<Contatos>
+    @Query("SELECT * FROM Contatos")
+    suspend fun buscarTodos(): List<Contato>
 
-    @Query("SELECT * FROM contatos LIMIT 4")
-    suspend fun buscar4(): List<Contatos>
+    @Query("SELECT * FROM Contatos LIMIT 4")
+    suspend fun buscar4(): List<Contato>
 
     @Delete
-    suspend fun deletarCtt(contato: Contatos)
+    suspend fun deletarCtt(contato: Contato)
 
     @Update
-    suspend fun atualizarCtt(contato: Contatos)
+    suspend fun atualizarCtt(contato: Contato)
 }

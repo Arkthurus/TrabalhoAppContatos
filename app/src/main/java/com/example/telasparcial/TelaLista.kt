@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.AppDataBase
-import com.example.telasparcial.data.entities.Contatos
+import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -127,7 +127,7 @@ fun SearchBar() {
 @Composable
 private fun FavoriteContacts(navController: NavController) {
 
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
 
     val context     =             LocalContext.current
 
@@ -180,7 +180,7 @@ private fun FavoriteContacts(navController: NavController) {
 @Composable
 private fun RecentContactsList() {
 
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
 
     val context     =             LocalContext.current
 
@@ -209,7 +209,7 @@ private fun RecentContactsList() {
         )
         LazyColumn {
             items(contatos) { contato ->
-                var nome : String = contato.nome
+                val nome : String = contato.nome
                 RecentContactCard(nome)
             }
         }
@@ -218,7 +218,7 @@ private fun RecentContactsList() {
 
 @Composable
 fun DuploCtt() {
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
     val context = LocalContext.current
     val db = AppDataBase.getDataBase(context)
     val contatosDAO = db.contatosDao()
@@ -259,7 +259,7 @@ fun DuploCtt() {
 }
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-private fun ContactsCards(contato : Contatos, contatosDAO: ContatosDAO, onContatoDeletado: () -> Unit) {
+private fun ContactsCards(contato : Contato, contatosDAO: ContatosDAO, onContatoDeletado: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     Spacer(modifier = Modifier.width(20.dp))
         Card(

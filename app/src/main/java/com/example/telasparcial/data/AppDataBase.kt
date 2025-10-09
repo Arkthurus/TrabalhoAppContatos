@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.telasparcial.data.dao.ContatosDAO
-import com.example.telasparcial.data.entities.Contatos
+import com.example.telasparcial.data.entities.Contato
 
-@Database(entities = [Contatos::class], version = 1)
+@Database(entities = [Contato::class], version = 1)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contatosDao(): ContatosDAO
