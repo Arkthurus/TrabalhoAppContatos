@@ -26,7 +26,9 @@ import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun TelaEdit(
@@ -83,12 +85,15 @@ fun TelaEdit(
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val contatoAtualizado = Contato(id = id, nome = name, numero = phoneNumber)
+                            Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
                             contatosDAO.atualizarCtt(contatoAtualizado)
+                            withContext(Dispatchers.Main){
+                                navController.popBackStack()
+                            }
                         } catch (e: Exception) {
                             Log.e("Erro ao editar contato", "Msg: ${e.message}")
                         }
                     }
-                    navController.popBackStack()
                 }
             },
             modifier = Modifier.fillMaxWidth()

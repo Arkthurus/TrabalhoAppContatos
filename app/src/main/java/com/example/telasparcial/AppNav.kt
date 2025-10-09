@@ -27,12 +27,12 @@ fun AppNav() {
         ) { backStackEntry ->
             val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
             val nomeCtt = backStackEntry.arguments?.getString("nomeCtt") ?: ""
-            val idCtt = backStackEntry.arguments?.getInt("idCtt") ?: ""
+            val idCtt = backStackEntry.arguments?.getInt("idCtt") ?: -1
 
             TelaEdit(
                 numeroCtt = numeroCtt,
                 nomeCtt = nomeCtt,
-                idCtt = id,
+                idCtt = idCtt,
                 onNavigateToTelaEdit = {},
                 navController = navController
             )

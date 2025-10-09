@@ -55,7 +55,6 @@ import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
-
 @Composable
 fun TelaLista(navController: NavController) {
     Scaffold(
@@ -190,7 +189,7 @@ private fun RecentContactsList() {
 
     LaunchedEffect(Unit) {
         try {
-            contatos = ContatosDAO.buscar4()
+            contatos = ContatosDAO.buscar(quantidade = 4)
         } catch (e: Exception) {
             Log.e("Erro ao add contato", "Msg: ${e.message}")
         }
@@ -361,12 +360,12 @@ fun RecentContactCard(nome: String) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(40.dp).padding(top = 10.dp)
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
                     Text(
                         text = nome,
-                        modifier = Modifier.padding(bottom = 15.dp, start = 15.dp, top = 10.dp),
+                        modifier = Modifier.padding(bottom = 15.dp, top = 10.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
