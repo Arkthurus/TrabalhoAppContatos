@@ -22,8 +22,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.example.telasparcial.BD.AppDataBase
-import com.example.telasparcial.BD.Contatos
+import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
@@ -84,7 +84,7 @@ fun TelaEdit(
                 if (name.isNotBlank() && phoneNumber.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val contatoAtualizado = Contatos(id = id, nome = name, numero = phoneNumber)
+                            val contatoAtualizado = Contato(id = id, nome = name, numero = phoneNumber)
                             Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
                             contatosDAO.atualizarCtt(contatoAtualizado)
                             withContext(Dispatchers.Main){

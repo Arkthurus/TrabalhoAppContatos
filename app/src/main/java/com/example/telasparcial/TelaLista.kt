@@ -50,9 +50,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.telasparcial.BD.ContatosDAO
-import com.example.telasparcial.BD.AppDataBase
-import com.example.telasparcial.BD.Contatos
+import com.example.telasparcial.data.dao.ContatosDAO
+import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 @Composable
@@ -66,11 +66,11 @@ fun TelaLista(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            item{Spacer(modifier = Modifier.height(5.dp))}
+            item { Spacer(modifier = Modifier.height(5.dp)) }
             item { FavoriteContacts(navController) }
-            item{Spacer(modifier = Modifier.height(10.dp))}
-            item{RecentContactsList()}
-            item{DuploCtt()}
+            item { Spacer(modifier = Modifier.height(10.dp)) }
+            item { RecentContactsList() }
+            item { DuploCtt() }
         }
 
     }
@@ -126,17 +126,17 @@ fun SearchBar() {
 @Composable
 private fun FavoriteContacts(navController: NavController) {
 
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
 
-    val context     =             LocalContext.current
+    val context = LocalContext.current
 
-    val db          = AppDataBase.getDataBase(context)
+    val db = AppDataBase.getDataBase(context)
 
-    val ContatosDAO =                 db.contatosDao()
+    val contatosDAO = db.contatosDao()
 
     LaunchedEffect(Unit) {
         try {
-            contatos = ContatosDAO.buscar4()
+            contatos = contatosDAO.buscar(quantidade = 4)
         } catch (e: Exception) {
             Log.e("Erro ao add contato", "Msg: ${e.message}")
         }
@@ -157,39 +157,39 @@ private fun FavoriteContacts(navController: NavController) {
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
             )
-            LazyRow{
-                    items(contatos) { contato ->
-                        Spacer(modifier = Modifier.width(15.dp))
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle ,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(start = 10.dp, bottom = 10.dp)
-                                .clickable { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") }
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                    }
+            LazyRow {
+                items(contatos) { contato ->
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(start = 10.dp, bottom = 10.dp)
+                            .clickable { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") }
+                    )
+                    Spacer(modifier = Modifier.width(20.dp))
                 }
             }
         }
     }
+}
 
 @Preview
 @Composable
 private fun RecentContactsList() {
 
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
 
-    val context     =             LocalContext.current
+    val context = LocalContext.current
 
-    val db          = AppDataBase.getDataBase(context)
+    val db = AppDataBase.getDataBase(context)
 
-    val ContatosDAO =                 db.contatosDao()
+    val ContatosDAO = db.contatosDao()
 
     LaunchedEffect(Unit) {
         try {
-            contatos = ContatosDAO.buscar4()
+            contatos = ContatosDAO.buscar(quantidade = 4)
         } catch (e: Exception) {
             Log.e("Erro ao add contato", "Msg: ${e.message}")
         }
@@ -208,7 +208,7 @@ private fun RecentContactsList() {
         )
         LazyColumn {
             items(contatos) { contato ->
-                var nome : String = contato.nome
+                val nome: String = contato.nome
                 RecentContactCard(nome)
             }
         }
@@ -217,13 +217,14 @@ private fun RecentContactsList() {
 
 @Composable
 fun DuploCtt() {
-    var contatos by remember { mutableStateOf<List<Contatos>>(emptyList()) }
+    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
     val context = LocalContext.current
     val db = AppDataBase.getDataBase(context)
     val contatosDAO = db.contatosDao()
     val coroutineScope = rememberCoroutineScope()// Use rememberCoroutineScope
     var contatosFlow = remember(contatosDAO) {
-        coroutineScope.launch {  contatosDAO.buscarTodos() }}
+        coroutineScope.launch { contatosDAO.buscarTodos() }
+    }
 
     // Função para buscar os contatos no banco de dados e atualizar o estado
     fun getContatos() {
@@ -256,77 +257,81 @@ fun DuploCtt() {
         }
     }
 }
+
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-private fun ContactsCards(contato : Contatos, contatosDAO: ContatosDAO, onContatoDeletado: () -> Unit) {
+private fun ContactsCards(
+    contato: Contato,
+    contatosDAO: ContatosDAO,
+    onContatoDeletado: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     Spacer(modifier = Modifier.width(20.dp))
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
-            modifier = Modifier
-                .size(width = 190.dp, height = 140.dp)
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+        modifier = Modifier
+            .size(width = 190.dp, height = 140.dp)
 
 
-        ) {
-            Row {
+    ) {
+        Row {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "",
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(start = 5.dp, top = 5.dp)
+            )
+            Text(
+                text = contato.nome,
+                modifier = Modifier.padding(16.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
+        Row {
+            Text(
+                text = contato.numero,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Row {
+            //Editar
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .width(95.dp)
+                    .padding(10.dp),
+                shape = ButtonDefaults.filledTonalShape
+            ) {
                 Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(start = 5.dp, top = 5.dp)
-                )
-                Text(
-                    text = contato.nome,
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center,
+                    Icons.Default.Create,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
                 )
             }
-            Row {
-                Text(
-                    text = contato.numero,
-                    modifier = Modifier.padding(start = 15.dp)
+            //Deletar
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        contatosDAO.deletarCtt(contato)
+                        onContatoDeletado()
+                    }
+                },
+                modifier = Modifier
+                    .width(95.dp)
+                    .padding(top = 10.dp, bottom = 10.dp, end = 10.dp),
+                shape = ButtonDefaults.filledTonalShape
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = null
                 )
-            }
-            Row {
-                //Editar
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .width(95.dp)
-                        .padding(10.dp),
-                    shape = ButtonDefaults.filledTonalShape
-                ) {
-                    Icon(
-                        Icons.Default.Create,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                //Deletar
-                Button(
-                    onClick = {
-                        coroutineScope.launch{
-                            contatosDAO.deletarCtt(contato)
-                            onContatoDeletado()
-                        }
-                    },
-                    modifier = Modifier
-                        .width(95.dp)
-                        .padding(top = 10.dp, bottom = 10.dp, end = 10.dp),
-                    shape = ButtonDefaults.filledTonalShape
-                ) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = null
-                    )
-                }
             }
         }
     }
-
+}
 
 
 @Composable

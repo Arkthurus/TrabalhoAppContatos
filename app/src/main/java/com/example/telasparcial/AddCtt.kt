@@ -20,8 +20,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import com.example.telasparcial.BD.AppDataBase
-import com.example.telasparcial.BD.Contatos
+import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,7 +81,7 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
                 if (name.isNotBlank() && phoneNumber.isNotBlank()){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            ContatosDAO.saveContact(Contatos(nome = name, numero = phoneNumber))
+                            ContatosDAO.salvarContato(Contato(nome = name, numero = phoneNumber))
                         }catch (e: Exception){
                             Log.e("Erro ao add contato", "Msg: ${e.message}")
                         }
