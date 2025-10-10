@@ -1,4 +1,4 @@
-package com.example.telasparcial
+package com.example.telasparcial.ui.telas
 
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyRow

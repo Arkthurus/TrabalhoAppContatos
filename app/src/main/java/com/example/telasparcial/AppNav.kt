@@ -6,6 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.telasparcial.ui.telas.AddCtt
+import com.example.telasparcial.ui.telas.TabScreen
+import com.example.telasparcial.ui.telas.TelaDiscagem
+import com.example.telasparcial.ui.telas.TelaEdit
+import com.example.telasparcial.ui.telas.TelaEscanearCodigo
+import com.example.telasparcial.ui.telas.TelaLista
+import com.example.telasparcial.ui.telas.TelaQR
 
 @Composable
 fun AppNav() {
@@ -40,7 +47,7 @@ fun AppNav() {
         composable("TelaDiscar") {
             TelaDiscagem(
                 navController = navController,
-                onNavigateToAddCtt = { numeroCtt : String ->
+                onNavigateToAddCtt = { numeroCtt: String ->
                     navController.navigate("TelaAddCtt/$numeroCtt")
                 }
             )

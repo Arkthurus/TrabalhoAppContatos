@@ -1,5 +1,4 @@
-package com.example.telasparcial
-
+ package com.example.telasparcial.ui.telas
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -21,31 +20,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
 import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 @Composable
-fun TelaEdit(
-    numeroCtt: String,
-    onNavigateToTelaEdit: (String) -> Unit,
-    navController: NavController,
-    nomeCtt: String,
-    idCtt: Int
-) {
-    var name by remember { mutableStateOf(nomeCtt) }
-    var phoneNumber by remember { mutableStateOf(numeroCtt) }
-    val id = idCtt
+fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
+    // Estado para o campo de nome
+    var name by remember { mutableStateOf("") }
+
+    // O número de telefone é passado como um parâmetro
+    val phoneNumber by remember { mutableStateOf(numeroCtt) }
 
     val context = LocalContext.current
-    val db = AppDataBase.getDataBase(context)
-    val contatosDAO = db.contatosDao()
 
+    val db = AppDataBase.getDataBase(context)
+
+    val contatosDAO = db.contatosDao()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,11 +47,11 @@ fun TelaEdit(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Modificar Contato", style = MaterialTheme.typography.titleLarge)
+        Text(text = "Adicionar Novo Contato", style = MaterialTheme.typography.titleLarge)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        //Nome
+        // Campo para o nome do contato
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -67,38 +61,37 @@ fun TelaEdit(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Numero de telefone
+        // Campo para o número de telefone, desabilitado para edição
         OutlinedTextField(
             value = phoneNumber,
-            onValueChange = { phoneNumber = it },
+            onValueChange = {}, // Não permite edição
             label = { Text("Número de Telefone") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            readOnly = false,
+            readOnly = true, // Torna o campo somente leitura
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Botão para salvar
         Button(
             onClick = {
-                if (name.isNotBlank() && phoneNumber.isNotBlank()) {
+                // Chama a função de salvamento, passando o nome e o número
+                // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
+                if (name.isNotBlank() && phoneNumber.isNotBlank()){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val contatoAtualizado = Contato(id = id, nome = name, numero = phoneNumber)
-                            Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
-                            contatosDAO.atualizarCtt(contatoAtualizado)
-                            withContext(Dispatchers.Main){
-                                navController.popBackStack()
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Erro ao editar contato", "Msg: ${e.message}")
+                            contatosDAO.salvarContato(Contato(nome = name, numero = phoneNumber))
+                        }catch (e: Exception){
+                            Log.e("Erro ao add contato", "Msg: ${e.message}")
                         }
                     }
+                    onSaveContact(name, phoneNumber)
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Salvar Alterações")
+            Text("Salvar Contato")
         }
     }
 }
