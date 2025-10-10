@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.entities.Contato
 
-@Database(entities = [Contato::class], version = 1)
+@Database(entities = [Contato::class], version = 2)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contatosDao(): ContatosDAO
@@ -26,7 +26,9 @@ abstract class AppDataBase : RoomDatabase() {
                         context.applicationContext,
                         AppDataBase::class.java,
                         "app_database"
-                    ).build()
+                    )
+                        .fallbackToDestructiveMigration(true)
+                        .build()
                     INSTANCE = instance
                     return instance
                 }
