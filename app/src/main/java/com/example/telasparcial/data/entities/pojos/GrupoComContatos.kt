@@ -12,6 +12,7 @@ data class GrupoComContatos(
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
+
         associateBy = Junction(
             value = GrupoContato::class,
             parentColumn = "grupoId",

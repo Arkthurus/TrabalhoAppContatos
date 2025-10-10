@@ -1,4 +1,4 @@
-package com.example.telasparcial
+package com.example.telasparcial.ui
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType

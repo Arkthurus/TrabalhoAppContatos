@@ -1,4 +1,4 @@
- package com.example.telasparcial.ui.telas
+package com.example.telasparcial.ui.telas
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -71,6 +71,7 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
 
+
         Spacer(modifier = Modifier.height(32.dp))
 
         // Botão para salvar
@@ -78,11 +79,11 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
             onClick = {
                 // Chama a função de salvamento, passando o nome e o número
                 // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
-                if (name.isNotBlank() && phoneNumber.isNotBlank()){
+                if (name.isNotBlank() && phoneNumber.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             contatosDAO.salvarContato(Contato(nome = name, numero = phoneNumber))
-                        }catch (e: Exception){
+                        } catch (e: Exception) {
                             Log.e("Erro ao add contato", "Msg: ${e.message}")
                         }
                     }
