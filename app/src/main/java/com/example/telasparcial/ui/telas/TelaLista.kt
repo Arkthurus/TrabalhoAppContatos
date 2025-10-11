@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,7 +34,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,18 +49,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.room.ColumnInfo
 import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+
 @Composable
 fun TelaLista(navController: NavController) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
-        var contatos by remember {mutableStateOf<List<Contato>>(emptyList())}
+        var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -133,14 +131,13 @@ private fun FavoriteContacts(navController: NavController) {
 
     val db = AppDataBase.getDataBase(context)
 
-    val contatosDAO = db.contatosDao()
+    val grupoDAO = db.grupoDao()
+    val grupoContatoDAO = db.grupoContatoDao()
 
     LaunchedEffect(Unit) {
-        try {
-            contatos = contatosDAO.buscar(quantidade = 4)
-        } catch (e: Exception) {
-            Log.e("Erro ao add contato", "Msg: ${e.message}")
-        }
+        val grupoFavoritos = grupoDAO.buscarPeloNome("Favoritos")
+        val grupoComContatos = grupoContatoDAO.buscarPorId(grupoFavoritos!!.id)
+        contatos = grupoComContatos!!.contatos
     }
 
     Card(
@@ -222,12 +219,16 @@ private fun RecentContactsList(navController: NavController) {
         )
         LazyColumn {
             items(contatos) { contato ->
-                val nome:   String = contato.nome
+                val nome: String = contato.nome
                 val numero: String = contato.numero
-                val id: Int        = contato.id
-                RecentContactCard(navController, contato, ContatosDAO, onContatoDeletado = {
-                                                                        getContatos()
-                                                                    }
+                val id: Int = contato.id
+                RecentContactCard(
+                    navController,
+                    contato,
+                    ContatosDAO,
+                    onContatoDeletado = {
+                        getContatos()
+                    }
                 )
             }
         }
@@ -241,7 +242,7 @@ fun DuploCtt(navController: NavController) {
     val db = AppDataBase.getDataBase(context)
     val contatosDAO = db.contatosDao()
     val coroutineScope = rememberCoroutineScope()// Use rememberCoroutineScope
-    var contatosFlow = remember(contatosDAO) {
+    val contatosFlow = remember(contatosDAO) {
         coroutineScope.launch { contatosDAO.buscarTodos() }
     }
     val navController = navController
@@ -268,7 +269,7 @@ fun DuploCtt(navController: NavController) {
             ) {
                 parDeContatos.forEach { contato ->
                     // Passe o callback 'getContatos' para o ContactsCards
-                    ContactsCards(contato, contatosDAO, onContatoDeletado = {
+                    ContactsCards(contato, onContatoDeletado = {
                         getContatos()
                     }, navController)
                 }
@@ -282,12 +283,16 @@ fun DuploCtt(navController: NavController) {
 @Composable
 private fun ContactsCards(
     contato: Contato,
-    contatosDAO: ContatosDAO,
     onContatoDeletado: () -> Unit,
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val contatosDAO = AppDataBase.getDataBase(context).contatosDao()
+    val grupoDAO = AppDataBase.getDataBase(context).grupoDao()
+    val grupoContatoDAO = AppDataBase.getDataBase(context).grupoContatoDao()
     val navController = navController
     val coroutineScope = rememberCoroutineScope()
+
     Spacer(modifier = Modifier.width(20.dp))
     Card(
         colors = CardDefaults.cardColors(
@@ -295,8 +300,6 @@ private fun ContactsCards(
         ),
         modifier = Modifier
             .size(width = 190.dp, height = 140.dp)
-
-
     ) {
         Row {
             Icon(
@@ -305,7 +308,11 @@ private fun ContactsCards(
                 modifier = Modifier
                     .size(40.dp)
                     .padding(start = 5.dp, top = 5.dp)
-                    .clickable{//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>COLOQUE AQUI A FUNÇÃO DE FAVORITAR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
+                    .clickable {
+                        coroutineScope.launch {
+                            val grupoFavoritos = grupoDAO.buscarPeloNome("Favoritos")
+                            grupoContatoDAO.adicionarAoGrupo(grupoFavoritos!!.id, contato.id)
+                        }
                     }
             )
             Text(
@@ -323,7 +330,7 @@ private fun ContactsCards(
         Row {
             //Editar
             Button(
-                onClick = {navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}")},
+                onClick = { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") },
                 modifier = Modifier
                     .width(95.dp)
                     .padding(10.dp),
@@ -364,10 +371,11 @@ fun RecentContactCard(
     navController: NavController,
     contato: Contato,
     contatosDAO: ContatosDAO,
-    onContatoDeletado:() -> Unit
+    onContatoDeletado: () -> Unit
 ) {
-    var coroutineScope = rememberCoroutineScope()
-    var contato = contato
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val contato = contato
     Column(modifier = Modifier.padding()) {
         Surface(
             modifier = Modifier
@@ -383,13 +391,20 @@ fun RecentContactCard(
                         navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}")
                     },
                     onLongClick = {
-                        coroutineScope.launch{
+                        coroutineScope.launch {
                             contatosDAO.deletarCtt(contato)
                             onContatoDeletado()
                         }
                     },
                     onDoubleClick = {
-                        //FAVORITAR AQUI//
+                        coroutineScope.launch {
+                            val gruposContatosDAO =
+                                AppDataBase.getDataBase(context).grupoContatoDao()
+                            val gruposDAO = AppDataBase.getDataBase(context).grupoDao()
+
+                            val grupoFavoritos = gruposDAO.buscarPeloNome("Favoritos")
+                            gruposContatosDAO.adicionarAoGrupo(grupoFavoritos!!.id, contato.id)
+                        }
                     }
                 )
         ) {
@@ -405,7 +420,9 @@ fun RecentContactCard(
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "",
-                        modifier = Modifier.size(40.dp).padding(top = 10.dp)
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(top = 10.dp)
                     )
                     Spacer(modifier = Modifier.width(15.dp))
                     Text(
