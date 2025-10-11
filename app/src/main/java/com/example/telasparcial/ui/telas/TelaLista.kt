@@ -1,7 +1,6 @@
 package com.example.telasparcial.ui.telas
 
 import android.util.Log
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -49,9 +49,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.room.ColumnInfo
-import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.AppDataBase
+import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.entities.Contato
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
@@ -61,7 +60,6 @@ fun TelaLista(navController: NavController) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
-        var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -185,13 +183,13 @@ private fun RecentContactsList(navController: NavController) {
 
     val db = AppDataBase.getDataBase(context)
 
-    val ContatosDAO = db.contatosDao()
+    val contatosDAO = db.contatosDao()
 
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         try {
-            contatos = ContatosDAO.buscar(quantidade = 4)
+            contatos = contatosDAO.buscar(quantidade = 4)
         } catch (e: Exception) {
             Log.e("Erro ao add contato", "Msg: ${e.message}")
         }
@@ -199,7 +197,7 @@ private fun RecentContactsList(navController: NavController) {
     fun getContatos() {
         coroutineScope.launch {
             try {
-                contatos = ContatosDAO.buscarTodos()
+                contatos = contatosDAO.buscarTodos()
             } catch (e: Exception) {
                 Log.e("Erro ao buscar contatos", "Msg: ${e.message}")
             }
@@ -225,7 +223,7 @@ private fun RecentContactsList(navController: NavController) {
                 RecentContactCard(
                     navController,
                     contato,
-                    ContatosDAO,
+                    contatosDAO,
                     onContatoDeletado = {
                         getContatos()
                     }
