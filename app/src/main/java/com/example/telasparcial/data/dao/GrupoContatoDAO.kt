@@ -10,7 +10,7 @@ import com.example.telasparcial.data.entities.pojos.GrupoComContatos
 @Dao
 interface GrupoContatoDAO {
     @Transaction
-    @Query("SELECT * FROM GruposContatos")
+    @Query("SELECT * FROM Grupos")
     suspend fun buscarTodos(): List<GrupoComContatos>
 
     @Transaction

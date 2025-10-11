@@ -7,8 +7,16 @@ import androidx.room.RoomDatabase
 import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.dao.GrupoContatoDAO
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.data.entities.Grupo
+import com.example.telasparcial.data.entities.GrupoContato
 
-@Database(entities = [Contato::class], version = 2)
+@Database(
+    entities = [
+        Contato::class,
+        Grupo::class,
+        GrupoContato::class
+    ], version = 3
+)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun contatosDao(): ContatosDAO
