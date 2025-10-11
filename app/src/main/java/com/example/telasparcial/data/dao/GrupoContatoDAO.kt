@@ -14,8 +14,8 @@ interface GrupoContatoDAO {
     suspend fun buscarTodos(): List<GrupoComContatos>
 
     @Transaction
-    @Query("SELECT * FROM Grupos WHERE id = :id")
-    suspend fun buscarPorId(id: Int): GrupoComContatos?
+    @Query("SELECT * FROM Grupos WHERE id = :idGrupo")
+    suspend fun buscarPorId(idGrupo: Int): GrupoComContatos?
 
     @Transaction
     suspend fun adicionarAoGrupo(grupoId: Int, contatoId: Int) {
