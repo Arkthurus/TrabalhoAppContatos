@@ -61,15 +61,11 @@ fun AppNav() {
         ) { backStackEntry ->
             val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
 
-            // Chama a TelaAddCtt, passando o número e a função onSaveContact
             AddCtt(
                 numeroCtt = numeroCtt,
                 onSaveContact = { name, number ->
-                    // Esta lambda é chamada quando o botão Salvar é clicado
-                    // Aqui você pode adicionar a lógica para salvar o contato em um banco de dados, etc.
                     println("Contato a ser salvo: Nome: $name, Número: $number")
 
-                    // Em seguida, voltamos para a tela anterior
                     navController.popBackStack()
                 }
             )
