@@ -20,7 +20,8 @@ import kotlinx.coroutines.launch
         Contato::class,
         Grupo::class,
         GrupoContato::class
-    ], version = 4
+    ],
+    version = 4
 )
 abstract class AppDataBase : RoomDatabase() {
 
@@ -28,34 +29,5 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun grupoContatoDao(): GrupoContatoDAO
     abstract fun grupoDao(): GrupoDAO
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDataBase? = null
-
-        fun getDataBase(context: Context): AppDataBase {
-            val tempINSTANCE = INSTANCE
-            if (tempINSTANCE != null) {
-                return tempINSTANCE
-            } else {
-                synchronized(this) {
-                    val instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        AppDataBase::class.java,
-                        "app_database"
-                    )
-                        .fallbackToDestructiveMigration(true)
-                        .build()
-                    INSTANCE = instance
-
-                    // Cria o grupo "Favoritos"
-                    CoroutineScope(Dispatchers.IO).launch {
-                        instance.grupoDao().inserirGrupo(Grupo(nome = "Favoritos"))
-                    }
-
-                    return instance
-                }
-            }
-        }
-    }
 
 }
