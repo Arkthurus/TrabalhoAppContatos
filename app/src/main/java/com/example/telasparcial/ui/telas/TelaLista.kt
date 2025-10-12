@@ -1,6 +1,5 @@
 package com.example.telasparcial.ui.telas
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -35,23 +34,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.telasparcial.data.AppDataBase
-import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.viewmodel.ContatoViewModel
+import com.example.telasparcial.viewmodel.GrupoContatoViewModel
+import com.example.telasparcial.viewmodel.GrupoViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -68,6 +65,7 @@ fun TelaLista(navController: NavController) {
             item { FavoriteContacts(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { RecentContactsList(navController) }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
             item { DuploCtt(navController) }
         }
 
@@ -121,22 +119,13 @@ fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
 //}
 
 @Composable
-private fun FavoriteContacts(navController: NavController) {
-
-    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
-
-    val context = LocalContext.current
-
-    val db = AppDataBase.getDataBase(context)
-
-    val grupoDAO = db.grupoDao()
-    val grupoContatoDAO = db.grupoContatoDao()
-
-    LaunchedEffect(Unit) {
-        val grupoFavoritos = grupoDAO.buscarPeloNome("Favoritos")
-        val grupoComContatos = grupoContatoDAO.buscarPorId(grupoFavoritos!!.id)
-        contatos = grupoComContatos!!.contatos
-    }
+private fun FavoriteContacts(
+    navController: NavController,
+    grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
+) {
+    val gruposComContatos by grupoContatoViewModel.gruposComContatos.collectAsState()
+    val grupoFavoritos = gruposComContatos.find { it.grupo.nome == "Favoritos" }
+    val contatos = grupoFavoritos?.contatos ?: emptyList()
 
     Card(
         colors = CardDefaults.cardColors(
@@ -173,42 +162,17 @@ private fun FavoriteContacts(navController: NavController) {
 
 
 @Composable
-private fun RecentContactsList(navController: NavController) {
-
-    val navController = navController
-
-    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
-
-    val context = LocalContext.current
-
-    val db = AppDataBase.getDataBase(context)
-
-    val contatosDAO = db.contatosDao()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        try {
-            contatos = contatosDAO.buscar(quantidade = 4)
-        } catch (e: Exception) {
-            Log.e("Erro ao add contato", "Msg: ${e.message}")
-        }
-    }
-    fun getContatos() {
-        coroutineScope.launch {
-            try {
-                contatos = contatosDAO.buscarTodos()
-            } catch (e: Exception) {
-                Log.e("Erro ao buscar contatos", "Msg: ${e.message}")
-            }
-        }
-    }
+private fun RecentContactsList(
+    navController: NavController,
+    contatoViewModel: ContatoViewModel = hiltViewModel(),
+) {
+    val contatos by contatoViewModel.contatos.collectAsState()
 
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
         ),
-        modifier = Modifier.size(width = 400.dp, height = 300.dp)
+        modifier = Modifier.size(width = 400.dp, height = 250.dp)
     ) {
         Text(
             text = "Recentes",
@@ -222,11 +186,7 @@ private fun RecentContactsList(navController: NavController) {
                 val id: Int = contato.id
                 RecentContactCard(
                     navController,
-                    contato,
-                    contatosDAO,
-                    onContatoDeletado = {
-                        getContatos()
-                    }
+                    contato
                 )
             }
         }
@@ -234,31 +194,11 @@ private fun RecentContactsList(navController: NavController) {
 }
 
 @Composable
-fun DuploCtt(navController: NavController) {
-    var contatos by remember { mutableStateOf<List<Contato>>(emptyList()) }
-    val context = LocalContext.current
-    val db = AppDataBase.getDataBase(context)
-    val contatosDAO = db.contatosDao()
-    val coroutineScope = rememberCoroutineScope()// Use rememberCoroutineScope
-    val contatosFlow = remember(contatosDAO) {
-        coroutineScope.launch { contatosDAO.buscarTodos() }
-    }
-    val navController = navController
-
-    // Função para buscar os contatos no banco de dados e atualizar o estado
-    fun getContatos() {
-        coroutineScope.launch {
-            try {
-                contatos = contatosDAO.buscarTodos()
-            } catch (e: Exception) {
-                Log.e("Erro ao buscar contatos", "Msg: ${e.message}")
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        getContatos()
-    }
+fun DuploCtt(
+    navController: NavController,
+    viewModel: ContatoViewModel = hiltViewModel()
+) {
+    val contatos by viewModel.contatos.collectAsState()
 
     Column {
         contatos.chunked(2).forEach { parDeContatos ->
@@ -267,9 +207,7 @@ fun DuploCtt(navController: NavController) {
             ) {
                 parDeContatos.forEach { contato ->
                     // Passe o callback 'getContatos' para o ContactsCards
-                    ContactsCards(contato, onContatoDeletado = {
-                        getContatos()
-                    }, navController)
+                    ContactCard(contato, navController)
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -279,17 +217,15 @@ fun DuploCtt(navController: NavController) {
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-private fun ContactsCards(
+private fun ContactCard(
     contato: Contato,
-    onContatoDeletado: () -> Unit,
     navController: NavController
 ) {
-    val context = LocalContext.current
-    val contatosDAO = AppDataBase.getDataBase(context).contatosDao()
-    val grupoDAO = AppDataBase.getDataBase(context).grupoDao()
-    val grupoContatoDAO = AppDataBase.getDataBase(context).grupoContatoDao()
-    val navController = navController
-    val coroutineScope = rememberCoroutineScope()
+    val grupoViewModel: GrupoViewModel = hiltViewModel()
+    val grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
+    val contatoViewModel: ContatoViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
 
     Spacer(modifier = Modifier.width(20.dp))
     Card(
@@ -307,9 +243,14 @@ private fun ContactsCards(
                     .size(40.dp)
                     .padding(start = 5.dp, top = 5.dp)
                     .clickable {
-                        coroutineScope.launch {
-                            val grupoFavoritos = grupoDAO.buscarPeloNome("Favoritos")
-                            grupoContatoDAO.adicionarAoGrupo(grupoFavoritos!!.id, contato.id)
+                        scope.launch {
+                            val grupoFavoritos = grupoViewModel.buscarGrupoPeloNome("Favoritos")
+                            if (grupoFavoritos != null) {
+                                grupoContatoViewModel.adicionarAoGrupo(
+                                    grupoFavoritos.id,
+                                    contato.id
+                                )
+                            }
                         }
                     }
             )
@@ -343,10 +284,7 @@ private fun ContactsCards(
             //Deletar
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        contatosDAO.deletarCtt(contato)
-                        onContatoDeletado()
-                    }
+                    contatoViewModel.deletarContato(contato)
                 },
                 modifier = Modifier
                     .width(95.dp)
@@ -367,13 +305,12 @@ private fun ContactsCards(
 @Composable
 fun RecentContactCard(
     navController: NavController,
-    contato: Contato,
-    contatosDAO: ContatosDAO,
-    onContatoDeletado: () -> Unit
+    contato: Contato
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val contato = contato
+    val scope = rememberCoroutineScope()
+    val grupoViewModel: GrupoViewModel = hiltViewModel()
+    val grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
+
     Column(modifier = Modifier.padding()) {
         Surface(
             modifier = Modifier
@@ -389,19 +326,16 @@ fun RecentContactCard(
                         navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}")
                     },
                     onLongClick = {
-                        coroutineScope.launch {
-                            contatosDAO.deletarCtt(contato)
-                            onContatoDeletado()
-                        }
                     },
-                    onDoubleClick = {
-                        coroutineScope.launch {
-                            val gruposContatosDAO =
-                                AppDataBase.getDataBase(context).grupoContatoDao()
-                            val gruposDAO = AppDataBase.getDataBase(context).grupoDao()
-
-                            val grupoFavoritos = gruposDAO.buscarPeloNome("Favoritos")
-                            gruposContatosDAO.adicionarAoGrupo(grupoFavoritos!!.id, contato.id)
+                    onDoubleClick = { // Adicionar aos favoritos
+                        scope.launch {
+                            val grupoFavoritos = grupoViewModel.buscarGrupoPeloNome("Favoritos")
+                            if (grupoFavoritos != null) {
+                                grupoContatoViewModel.adicionarAoGrupo(
+                                    grupoFavoritos.id,
+                                    contato.id
+                                )
+                            }
                         }
                     }
                 )

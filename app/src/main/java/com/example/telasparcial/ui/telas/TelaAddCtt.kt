@@ -20,26 +20,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.viewmodel.ContatoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
+fun AddCtt(
+    numeroCtt: String,
+    onSaveContact: (String, String) -> Unit,
+    contatoViewModel: ContatoViewModel = hiltViewModel()
+) {
     // Estado para o campo de nome
     var name by remember { mutableStateOf("") }
-
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
 
-    val context = LocalContext.current
-
-    val db = AppDataBase.getDataBase(context)
-
-    val contatosDAO = db.contatosDao()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,11 +81,7 @@ fun AddCtt(numeroCtt: String, onSaveContact: (String, String) -> Unit) {
                 // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
                 if (name.isNotBlank() && phoneNumber.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            contatosDAO.salvarContato(Contato(nome = name, numero = phoneNumber))
-                        } catch (e: Exception) {
-                            Log.e("Erro ao add contato", "Msg: ${e.message}")
-                        }
+                        contatoViewModel.addContato(Contato(nome = name, numero = phoneNumber))
                     }
                     onSaveContact(name, phoneNumber)
                 }
