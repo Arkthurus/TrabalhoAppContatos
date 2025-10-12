@@ -21,6 +21,13 @@ class ContatoViewModel @Inject constructor(private val contatoDAO: ContatosDAO):
             initialValue = emptyList()
         )
 
+    val contatos4: StateFlow<List<Contato>> = contatoDAO.buscar(4)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
     fun addContato(contato: Contato) {
         viewModelScope.launch {
             contatoDAO.salvarContato(contato)

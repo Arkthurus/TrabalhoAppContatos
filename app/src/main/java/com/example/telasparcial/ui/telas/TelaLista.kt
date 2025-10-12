@@ -65,15 +65,13 @@ fun TelaLista(navController: NavController) {
             item { FavoriteContacts(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
             item { RecentContactsList(navController) }
-            item { Spacer(modifier = Modifier.height(10.dp)) }
+            item { Spacer(modifier = Modifier.height(15.dp)) }
             item { DuploCtt(navController) }
         }
 
     }
 }
 
-
-// Composable genérico para os botões da Bottom Bar
 @Composable
 fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
     Button(
@@ -166,13 +164,13 @@ private fun RecentContactsList(
     navController: NavController,
     contatoViewModel: ContatoViewModel = hiltViewModel(),
 ) {
-    val contatos by contatoViewModel.contatos.collectAsState()
+    val contatos by contatoViewModel.contatos4.collectAsState()
 
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
         ),
-        modifier = Modifier.size(width = 400.dp, height = 250.dp)
+        modifier = Modifier.size(width = 400.dp, height = 270.dp)
     ) {
         Text(
             text = "Recentes",
@@ -230,8 +228,11 @@ private fun ContactCard(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         modifier = Modifier
-            .size(width = 190.dp, height = 140.dp)
+            .size(width = 190.dp, height = 170.dp)
+
     ) {
+        Column(modifier = Modifier.fillMaxSize(),
+               verticalArrangement = Arrangement.SpaceBetween){
         Row {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
@@ -269,7 +270,7 @@ private fun ContactCard(
                 onClick = { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") },
                 modifier = Modifier
                     .width(95.dp)
-                    .padding(10.dp),
+                    .padding( 10.dp),
                 shape = ButtonDefaults.filledTonalShape
             ) {
                 Icon(
@@ -295,6 +296,7 @@ private fun ContactCard(
             }
         }
     }
+    }
 }
 
 
@@ -307,6 +309,7 @@ fun RecentContactCard(
     val scope = rememberCoroutineScope()
     val grupoViewModel: GrupoViewModel = hiltViewModel()
     val grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
+    val contatoViewModel: ContatoViewModel = hiltViewModel()
 
     Column(modifier = Modifier.padding()) {
         Surface(
@@ -323,6 +326,7 @@ fun RecentContactCard(
                         navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}")
                     },
                     onLongClick = {
+                        contatoViewModel.deletarContato(contato)
                     },
                     onDoubleClick = { // Adicionar aos favoritos
                         scope.launch {
