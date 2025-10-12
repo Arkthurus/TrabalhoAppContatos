@@ -22,7 +22,7 @@ fun AppNav() {
     NavHost(navController = navController, startDestination = "TelaLista") {
         composable("TelaLista") {
             // Passa o navController para a tela principal
-            TelaLista(navController,)
+            TelaLista(navController)
         }
         composable(
             route = "TelaEdit/{nomeCtt}/{numeroCtt}/{idCtt}",
@@ -51,7 +51,7 @@ fun AppNav() {
                 }
             )
         }
-        composable("TabScreen"){
+        composable("TabScreen") {
             TabScreen(navController)
         }
         composable(

@@ -181,9 +181,6 @@ private fun RecentContactsList(
         )
         LazyColumn {
             items(contatos) { contato ->
-                val nome: String = contato.nome
-                val numero: String = contato.numero
-                val id: Int = contato.id
                 RecentContactCard(
                     navController,
                     contato
@@ -348,7 +345,7 @@ fun RecentContactCard(
                     .padding(start = 5.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Row() {
+                Row {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "",
