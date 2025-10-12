@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.telasparcial.data.entities.Contato
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContatosDAO {
@@ -13,14 +14,14 @@ interface ContatosDAO {
     suspend fun salvarContato(contato: Contato)
 
     @Query("SELECT * FROM Contatos")
-    suspend fun buscarTodos(): List<Contato>
+    fun buscarTodos(): Flow<List<Contato>>
 
     @Query("SELECT * FROM Contatos LIMIT :quantidade")
-    suspend fun buscar(quantidade: Int): List<Contato>
+    fun buscar(quantidade: Int): Flow<List<Contato>>
 
     @Delete
-    suspend fun deletarCtt(contato: Contato)
+    suspend fun deletarContato(contato: Contato)
 
     @Update
-    suspend fun atualizarCtt(contato: Contato)
+    suspend fun atualizarContato(contato: Contato)
 }

@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.telasparcial.data.entities.Grupo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GrupoDAO {
@@ -13,6 +14,9 @@ interface GrupoDAO {
 
     @Delete
     suspend fun deletarGrupo(grupo: Grupo)
+
+    @Query("SELECT * FROM Grupos")
+    fun buscarTodos(): Flow<List<Grupo>>
 
     @Query("SELECT * FROM Grupos WHERE nome = :nome LIMIT 1")
     suspend fun buscarPeloNome(nome: String): Grupo?

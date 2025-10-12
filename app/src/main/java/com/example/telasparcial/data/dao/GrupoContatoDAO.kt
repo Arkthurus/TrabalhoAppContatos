@@ -6,16 +6,17 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.example.telasparcial.data.entities.GrupoContato
 import com.example.telasparcial.data.entities.pojos.GrupoComContatos
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GrupoContatoDAO {
     @Transaction
     @Query("SELECT * FROM Grupos")
-    suspend fun buscarTodos(): List<GrupoComContatos>
+    fun buscarTodos(): Flow<List<GrupoComContatos>>
 
     @Transaction
     @Query("SELECT * FROM Grupos WHERE id = :idGrupo")
-    suspend fun buscarPorId(idGrupo: Int): GrupoComContatos?
+    fun buscarPorId(idGrupo: Int): Flow<GrupoComContatos?>
 
     @Transaction
     suspend fun adicionarAoGrupo(grupoId: Int, contatoId: Int) {
