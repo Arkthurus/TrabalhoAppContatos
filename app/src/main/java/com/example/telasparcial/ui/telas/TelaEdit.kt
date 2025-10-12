@@ -20,10 +20,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.telasparcial.data.AppDataBase
 import com.example.telasparcial.data.entities.Contato
+import com.example.telasparcial.viewmodel.ContatoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,18 +32,14 @@ import kotlinx.coroutines.withContext
 @Composable
 fun TelaEdit(
     numeroCtt: String,
-    onNavigateToTelaEdit: (String) -> Unit,
     navController: NavController,
     nomeCtt: String,
-    idCtt: Int
+    idContato: Int,
+    contatoViewModel: ContatoViewModel = hiltViewModel()
 ) {
-    var name by remember { mutableStateOf(nomeCtt) }
-    var phoneNumber by remember { mutableStateOf(numeroCtt) }
-    val id = idCtt
-
-    val context = LocalContext.current
-    val db = AppDataBase.getDataBase(context)
-    val contatosDAO = db.contatosDao()
+    var nome by remember { mutableStateOf(nomeCtt) }
+    var numeroTelefone by remember { mutableStateOf(numeroCtt) }
+    val id = idContato
 
     Column(
         modifier = Modifier
@@ -58,8 +54,8 @@ fun TelaEdit(
 
         //Nome
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = nome,
+            onValueChange = { nome = it },
             label = { Text("Nome") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -68,8 +64,8 @@ fun TelaEdit(
 
         //Numero de telefone
         OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
+            value = numeroTelefone,
+            onValueChange = { numeroTelefone = it },
             label = { Text("Número de Telefone") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             readOnly = false,
@@ -80,12 +76,12 @@ fun TelaEdit(
 
         Button(
             onClick = {
-                if (name.isNotBlank() && phoneNumber.isNotBlank()) {
+                if (nome.isNotBlank() && numeroTelefone.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val contatoAtualizado = Contato(id = id, nome = name, numero = phoneNumber)
+                            val contatoAtualizado = Contato(id = id, nome = nome, numero = numeroTelefone)
                             Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
-                            contatosDAO.atualizarCtt(contatoAtualizado)
+                            contatoViewModel.atualizarContato(contatoAtualizado)
                             withContext(Dispatchers.Main){
                                 navController.popBackStack()
                             }

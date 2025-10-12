@@ -1,4 +1,4 @@
-package com.example.telasparcial.ui
+package com.example.telasparcial.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -39,8 +39,7 @@ fun AppNav() {
             TelaEdit(
                 numeroCtt = numeroCtt,
                 nomeCtt = nomeCtt,
-                idCtt = idCtt,
-                onNavigateToTelaEdit = {},
+                idContato = idCtt,
                 navController = navController
             )
         }
