@@ -3,35 +3,51 @@ package com.example.telasparcial.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.telasparcial.data.dao.GrupoContatoDAO
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
+import com.example.telasparcial.data.entities.pojos.GrupoComContatos
+import com.example.telasparcial.data.repository.GrupoContatoRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GrupoContatoViewModel constructor(private val grupoContatoDAO: GrupoContatoDAO): ViewModel() {
-    val gruposComContatos = grupoContatoDAO.buscarTodos()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList(),
-        )
+data class GruposContatosUiState(
+    val gruposComContatos: List<GrupoComContatos> = emptyList()
+) {}
+
+class GrupoContatoViewModel(private val grupoContatoRepository: GrupoContatoRepository) :
+    ViewModel() {
+
+    private val _uiState = MutableStateFlow(GruposContatosUiState())
+
+    val uiState: StateFlow<GruposContatosUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            grupoContatoRepository.buscarTodos().collect() { gruposComContatos ->
+                _uiState.update {
+                    it.copy(gruposComContatos = gruposComContatos)
+                }
+            }
+        }
+    }
 
     fun adicionarAoGrupo(grupoId: Int, contatoId: Int) {
+        val state = _uiState.value
+        val grupoComContatos = state.gruposComContatos.find { it.grupo.id == grupoId }
+
+        if (grupoComContatos == null) {
+            Log.e("GrupoContatoViewModel", "Grupo não encontrado")
+            return
+        }
+
+        if (grupoComContatos.contatos.any { it -> it.id == contatoId }) {
+            Log.e("GrupoContatoViewModel", "Contato já está no grupo")
+            return
+        }
+
         viewModelScope.launch {
-            val grupo = grupoContatoDAO.buscarPorId(grupoId).first()
-
-            if (grupo == null) {
-                Log.e("GrupoContatoViewModel", "Grupo não encontrado")
-                return@launch
-            }
-
-            if (grupo.contatos.any { it.id == contatoId }) {
-                Log.e("GrupoContatoViewModel", "Contato já está no grupo")
-                return@launch
-            }
-
-            grupoContatoDAO.adicionarAoGrupo(grupoId, contatoId)
+            grupoContatoRepository.adicionarAoGrupo(grupoId, contatoId)
         }
     }
 }

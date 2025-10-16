@@ -3,18 +3,12 @@ package com.example.telasparcial.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.telasparcial.data.dao.GrupoDAO
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
-import com.example.telasparcial.data.repository.ContatosRepository
 import com.example.telasparcial.data.repository.GrupoRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
