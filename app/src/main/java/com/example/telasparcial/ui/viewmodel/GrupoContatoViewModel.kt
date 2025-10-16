@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.telasparcial.data.dao.GrupoContatoDAO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class GrupoContatoViewModel @Inject constructor(private val grupoContatoDAO: GrupoContatoDAO): ViewModel() {
+class GrupoContatoViewModel constructor(private val grupoContatoDAO: GrupoContatoDAO): ViewModel() {
     val gruposComContatos = grupoContatoDAO.buscarTodos()
         .stateIn(
             viewModelScope,
