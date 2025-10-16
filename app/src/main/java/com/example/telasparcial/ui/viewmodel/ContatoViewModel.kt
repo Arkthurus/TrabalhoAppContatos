@@ -11,17 +11,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class  ContatosUiState(
+data class ContatosUiState(
     val listaDeContatos: List<Contato> = emptyList(),
-    val lista4Contatos:  List<Contato> = emptyList(),
-    val nome:   String = "",
+    val lista4Contatos: List<Contato> = emptyList(),
+    val nome: String = "",
     val numero: String = " ",
     val contatoEmEdit: Contato? = null
-){}
+) {}
 
 
-
-class ContatoViewModel (private val contatosRepository: ContatosRepository): ViewModel() {
+class ContatoViewModel(private val contatosRepository: ContatosRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ContatosUiState())
 
@@ -35,7 +34,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
                     currentState.copy(listaDeContatos = contatos)
                 }
             }
-            contatosRepository.buscarQTD(4).collect{ contatos ->
+            contatosRepository.buscarQTD(4).collect { contatos ->
                 _uiState.update { currentState ->
                     currentState.copy(lista4Contatos = contatos)
                 }
@@ -43,7 +42,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
         }
     }
 
-    fun salvarContato(){
+    fun salvarContato() {
 
         val state = _uiState.value
 
@@ -56,7 +55,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
         }
     }
 
-    fun atualizarContato(contato: Contato){
+    fun atualizarContato(contato: Contato) {
 
         _uiState.update {
             it.copy(
@@ -67,16 +66,15 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
         }
     }
 
-    fun deletarContato(contato: Contato){
+    fun deletarContato(contato: Contato) {
         viewModelScope.launch {
             contatosRepository.deletarContato(contato)
         }
     }
-
-
 }
 
-class ContatosViewModelFactory(private val contatoRepository: ContatosRepository) : ViewModelProvider.Factory {
+class ContatosViewModelFactory(private val contatoRepository: ContatosRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContatoViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
