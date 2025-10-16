@@ -1,4 +1,4 @@
-package com.example.telasparcial.viewmodel
+package com.example.telasparcial.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
