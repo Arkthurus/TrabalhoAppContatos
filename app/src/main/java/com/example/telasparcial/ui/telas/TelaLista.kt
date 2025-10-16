@@ -43,17 +43,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
-import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
+import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
 @Composable
-fun TelaLista(navController: NavController, contatoViewModel: ContatoViewModel) {
+fun TelaLista(
+    navController: NavController,
+    contatoViewModel: ContatoViewModel,
+    grupoViewModel: GrupoViewModel
+) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
@@ -62,11 +65,11 @@ fun TelaLista(navController: NavController, contatoViewModel: ContatoViewModel) 
                 .padding(innerPadding)
         ) {
             item { Spacer(modifier = Modifier.height(5.dp)) }
-            item { FavoriteContacts(navController) }
+            item { FavoriteContacts(navController, contatoViewModel, grupoViewModel) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { RecentContactsList(navController, contatoViewModel) }
+            item { RecentContactsList(navController, contatoViewModel, grupoViewModel) }
             item { Spacer(modifier = Modifier.height(15.dp)) }
-            item { DuploCtt(navController, contatoViewModel) }
+            item { DuploCtt(navController, contatoViewModel, grupoViewModel) }
         }
 
     }
@@ -119,8 +122,12 @@ fun BottomButton(icon: ImageVector, onClick: () -> Unit) {
 @Composable
 private fun FavoriteContacts(
     navController: NavController,
-    grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
+    contatoViewModel: ContatoViewModel,
+    grupoViewModel: GrupoViewModel,
 ) {
+
+    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
+
     val gruposComContatos by grupoContatoViewModel.gruposComContatos.collectAsState()
     val grupoFavoritos = gruposComContatos.find { it.grupo.nome == "Favoritos" }
     val contatos = grupoFavoritos?.contatos ?: emptyList()
@@ -149,7 +156,7 @@ private fun FavoriteContacts(
                         modifier = Modifier
                             .size(60.dp)
                             .padding(start = 10.dp, bottom = 10.dp)
-                            .clickable { navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}") }
+                            .clickable { navController.navigate("TelaEdit/${uiStateCtt.nome}/${uiStateCtt.numero}") }
                     )
                     Spacer(modifier = Modifier.width(20.dp))
                 }
@@ -162,7 +169,8 @@ private fun FavoriteContacts(
 @Composable
 private fun RecentContactsList(
     navController: NavController,
-    contatoViewModel: ContatoViewModel
+    contatoViewModel: ContatoViewModel,
+    grupoViewModel: GrupoViewModel
 ) {
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -182,7 +190,8 @@ private fun RecentContactsList(
                 RecentContactCard(
                     navController,
                     contato,
-                    contatoViewModel
+                    contatoViewModel,
+                    grupoViewModel
                 )
             }
         }
@@ -192,7 +201,8 @@ private fun RecentContactsList(
 @Composable
 fun DuploCtt(
     navController: NavController,
-    contatoViewModel: ContatoViewModel
+    contatoViewModel: ContatoViewModel,
+    grupoViewModel: GrupoViewModel
 ) {
 
     val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
@@ -305,7 +315,8 @@ private fun ContactCard(
 fun RecentContactCard(
     navController: NavController,
     contato: Contato,
-    contatoViewModel: ContatoViewModel
+    contatoViewModel: ContatoViewModel,
+    grupoViewModel: GrupoViewModel
 ) {
     val scope = rememberCoroutineScope()
 
@@ -321,14 +332,14 @@ fun RecentContactCard(
                 )
                 .combinedClickable(
                     onClick = {
-                        navController.navigate("TelaEdit/${contato.nome}/${contato.numero}/${contato.id}")
+                        navController.navigate("TelaEdit/${contato}")
                     },
                     onLongClick = {
                         contatoViewModel.deletarContato(contato)
                     },
                     onDoubleClick = { // Adicionar aos favoritos
                         scope.launch {
-                            val grupoFavoritos = grupoViewModel.buscarGrupoPeloNome("Favoritos")
+                            val grupoFavoritos = grupoViewModel.buscarPeloNome("Favoritos")
                             if (grupoFavoritos != null) {
                                 grupoContatoViewModel.adicionarAoGrupo(
                                     grupoFavoritos.id,

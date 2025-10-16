@@ -34,12 +34,11 @@ fun TelaEdit(
     numeroCtt: String,
     navController: NavController,
     nomeCtt: String,
-    idContato: Int,
     contatoViewModel: ContatoViewModel
 ) {
     var nome by remember { mutableStateOf(nomeCtt) }
     var numeroTelefone by remember { mutableStateOf(numeroCtt) }
-    val id = idContato
+
 
     Column(
         modifier = Modifier
@@ -76,20 +75,16 @@ fun TelaEdit(
 
         Button(
             onClick = {
-                if (nome.isNotBlank() && numeroTelefone.isNotBlank()) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            val contatoAtualizado = Contato(id = id, nome = nome, numero = numeroTelefone)
-                            Log.d("DEBUG_UPDATE", "Tentando atualizar o ID: $id")
-                            contatoViewModel.atualizarContato(contatoAtualizado)
-                            withContext(Dispatchers.Main){
-                                navController.popBackStack()
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Erro ao editar contato", "Msg: ${e.message}")
-                        }
+
+                CoroutineScope(Dispatchers.IO).launch {
+
+                    var contatoEditado = Contato(nome = nome, numero = numeroTelefone)
+                    contatoViewModel.atualizarContato(contato = contatoEditado)
+                    withContext(Dispatchers.Main){
+                        navController.popBackStack()
                     }
                 }
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {

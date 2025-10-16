@@ -65,13 +65,14 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
     }
 
     fun atualizarContato(contato: Contato){
-
-        _uiState.update {
-            it.copy(
-                contatoEmEdit = contato,
-                nome = contato.nome,
-                numero = contato.numero
-            )
+        if (contato.nome.isNotBlank() || contato.numero.isNotBlank()){
+            _uiState.update {
+                it.copy(
+                    contatoEmEdit = contato,
+                    nome = contato.nome,
+                    numero = contato.numero
+                )
+            }
         }
     }
 
