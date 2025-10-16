@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 
 
@@ -29,7 +28,7 @@ import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 fun AddCtt(
     numeroCtt: String,
     onSaveContact: (String, String) -> Unit,
-    contatoViewModel: ContatoViewModel = hiltViewModel()
+    contatoViewModel: ContatoViewModel
 ) {
     // Estado para o campo de nome
     var name by remember { mutableStateOf("") }
