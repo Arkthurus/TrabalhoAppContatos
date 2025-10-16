@@ -14,11 +14,9 @@ import com.example.telasparcial.data.entities.GrupoContato
 @Database(entities = [Contato::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun contatosDAO(): ContatosDAO
-
-    abstract fun grupoDAO(): GrupoDAO
-
-    abstract fun gruposContatosDAO(): GrupoContatoDAO
+    abstract fun contatosDao(): ContatosDAO
+    abstract fun grupoContatoDao(): GrupoContatoDAO
+    abstract fun grupoDao(): GrupoDAO
 
     companion object {
         @Volatile
