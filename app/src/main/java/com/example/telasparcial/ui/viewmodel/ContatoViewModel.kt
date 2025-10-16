@@ -23,7 +23,8 @@ data class  ContatosUiState(
     val listaDeContatos: List<Contato> = emptyList(),
     val lista4Contatos:  List<Contato> = emptyList(),
     val nome:   String = "",
-    val numero: String = " "
+    val numero: String = " ",
+    val contatoEmEdit: Contato? = null
 ){}
 
 
@@ -63,7 +64,16 @@ class ContatoViewModel @Inject constructor(private val contatosRepository: Conta
         }
     }
 
-    fun buscarTodos(){}
+    fun atualizarContato(contato: Contato){
+
+        _uiState.update {
+            it.copy(
+                contatoEmEdit = contato,
+                nome = contato.nome,
+                numero = contato.numero
+            )
+        }
+    }
 
 
 }
