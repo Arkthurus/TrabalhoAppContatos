@@ -4,7 +4,7 @@ import com.example.telasparcial.data.dao.GrupoDAO
 import com.example.telasparcial.data.entities.Grupo
 import kotlinx.coroutines.flow.Flow
 
-class GrupoRepositoryclass (private val grupoDAO: GrupoDAO){
+class GrupoRepository (private val grupoDAO: GrupoDAO){
 
     suspend fun inserirGrupo(grupo: Grupo){
         grupoDAO.inserirGrupo(grupo)
