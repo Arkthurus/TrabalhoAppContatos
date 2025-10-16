@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 data class  ContatosUiState(
     val listaDeContatos: List<Contato> = emptyList(),
+    val lista4Contatos:  List<Contato> = emptyList(),
     val nome:   String = "",
     val numero: String = " "
 ){}
@@ -39,6 +40,11 @@ class ContatoViewModel @Inject constructor(private val contatosRepository: Conta
             contatosRepository.buscarTodos().collect { contatos ->
                 _uiState.update { currentState ->
                     currentState.copy(listaDeContatos = contatos)
+                }
+            }
+            contatosRepository.buscarQTD(4).collect{ contatos ->
+                _uiState.update { currentState ->
+                    currentState.copy(lista4Contatos = contatos)
                 }
             }
         }
