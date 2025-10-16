@@ -75,6 +75,12 @@ class ContatoViewModel @Inject constructor(private val contatosRepository: Conta
         }
     }
 
+    fun deletarContato(contato: Contato){
+        viewModelScope.launch {
+            contatosRepository.deletarContato(contato)
+        }
+    }
+
 
 }
 
