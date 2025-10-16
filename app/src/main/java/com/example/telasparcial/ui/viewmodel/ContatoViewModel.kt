@@ -55,7 +55,7 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
 
         val state = _uiState.value
 
-        if (state.nome.isNotBlank() || state.numero.isNotBlank()) return
+        if (state.nome.isBlank() || state.numero.isBlank()) return
 
         val contatoSalvar = Contato(nome = state.nome, numero = state.numero)
 
