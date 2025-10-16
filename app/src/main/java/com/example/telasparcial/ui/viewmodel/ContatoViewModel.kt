@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.telasparcial.data.dao.ContatosDAO
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.repository.ContatosRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +16,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+
 
 data class  ContatosUiState(
     val listaDeContatos: List<Contato> = emptyList(),
     val lista4Contatos:  List<Contato> = emptyList(),
     val nome:   String = "",
     val numero: String = " ",
+    val id: Int = 0,
     val contatoEmEdit: Contato? = null
 ){}
 
@@ -43,7 +43,9 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
                     currentState.copy(listaDeContatos = contatos)
                 }
             }
-            contatosRepository.buscarQTD(4).collect{ contatos ->
+        }
+        viewModelScope.launch {
+            contatosRepository.buscarQTD(4).collect { contatos ->
                 _uiState.update { currentState ->
                     currentState.copy(lista4Contatos = contatos)
                 }
@@ -51,16 +53,24 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
         }
     }
 
-    fun salvarContato(){
+    fun salvarContato(contato: Contato){
 
         val state = _uiState.value
 
-        if (state.nome.isBlank() || state.numero.isBlank()) return
+        if (contato.nome.isBlank() || contato.numero.isBlank()) return
 
-        val contatoSalvar = Contato(nome = state.nome, numero = state.numero)
+        val contatoSalvar = contato
 
         viewModelScope.launch {
             contatosRepository.salvarContato(contatoSalvar)
+        }
+    }
+
+    fun receberCttEdit(contato: Contato){
+        _uiState.update {
+            it.copy(
+                 contatoEmEdit = contato
+            )
         }
     }
 
@@ -68,11 +78,12 @@ class ContatoViewModel (private val contatosRepository: ContatosRepository): Vie
         if (contato.nome.isNotBlank() || contato.numero.isNotBlank()){
             _uiState.update {
                 it.copy(
-                    contatoEmEdit = contato,
+                    id = contato.id,
                     nome = contato.nome,
                     numero = contato.numero
                 )
             }
+            viewModelScope.launch { contatosRepository.atualizarContato(contato) }
         }
     }
 

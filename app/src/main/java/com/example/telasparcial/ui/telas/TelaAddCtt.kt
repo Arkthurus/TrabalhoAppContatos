@@ -21,19 +21,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 
 
 @Composable
 fun AddCtt(
     numeroCtt: String,
-    onSaveContact: (String, String) -> Unit,
-    contatoViewModel: ContatoViewModel
+
+    contatoViewModel: ContatoViewModel,
+    navController: NavHostController
 ) {
     // Estado para o campo de nome
     var name by remember { mutableStateOf("") }
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
+
+    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -71,7 +77,11 @@ fun AddCtt(
 
         // Botão para salvar
         Button(
-            onClick = { onSaveContact(name, phoneNumber) },
+            onClick = {
+                var contatoAdd = Contato(nome = name, numero = phoneNumber)
+                contatoViewModel.salvarContato(contatoAdd)
+                navController.popBackStack()
+                },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Salvar Contato")

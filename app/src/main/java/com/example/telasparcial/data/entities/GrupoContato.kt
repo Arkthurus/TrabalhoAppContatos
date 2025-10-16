@@ -1,5 +1,6 @@
 package com.example.telasparcial.data.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
@@ -24,5 +25,6 @@ import androidx.room.ForeignKey.Companion.CASCADE
 )
 data class GrupoContato(
     val grupoId: Int,
+    @ColumnInfo(index = true)
     val contatoId: Int
 )

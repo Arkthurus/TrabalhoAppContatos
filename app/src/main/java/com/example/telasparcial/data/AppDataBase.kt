@@ -10,8 +10,15 @@ import com.example.telasparcial.data.dao.GrupoDAO
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.entities.GrupoContato
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-@Database(entities = [Contato::class], version = 5)
+@Database(entities = [
+    Contato::class,
+    Grupo::class,
+    GrupoContato::class
+    ], version = 6)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun contatosDao(): ContatosDAO
@@ -31,8 +38,13 @@ abstract class AppDatabase : RoomDatabase() {
                         context.applicationContext,
                         AppDatabase::class.java,
                         "app_database"
-                    ).build()
+                    ).fallbackToDestructiveMigration(true).build()
                     INSTANCE = instance
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (instance.grupoDao().buscarPeloNome("Favoritos") == null){
+                            instance.grupoDao().inserirGrupo(Grupo(nome = "Favoritos"))
+                        }
+                    }
                     return instance
                 }
             }

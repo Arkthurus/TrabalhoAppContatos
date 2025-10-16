@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 data class  GrupoUiState(
     val listaDeGrupos: List<Grupo> = emptyList(),
     val nome:   String = "",
+    val id: Int = 0,
     val contatoEmEdit: Contato? = null
 ){}
 
@@ -34,15 +35,20 @@ class GrupoViewModel (private val grupoRepository: GrupoRepository) : ViewModel(
         }
     }
 
-    fun inserirGrupo(){
+    fun inserirGrupo(grupo: Grupo){
 
         val state = _uiState.value
 
         if (state.nome.isBlank()) return
 
-        val grupoInserir = Grupo(nome = state.nome)
-
-        viewModelScope.launch { grupoRepository.inserirGrupo(grupoInserir) }
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    id = grupo.id,
+                    nome = grupo.nome
+                )
+            }
+            grupoRepository.inserirGrupo(grupo) }
     }
 
     fun deletarGrupo(grupo: Grupo){
