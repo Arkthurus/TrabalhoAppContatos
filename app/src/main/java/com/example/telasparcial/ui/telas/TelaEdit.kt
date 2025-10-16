@@ -35,7 +35,7 @@ fun TelaEdit(
     navController: NavController,
     nomeCtt: String,
     idContato: Int,
-    contatoViewModel: ContatoViewModel = hiltViewModel()
+    contatoViewModel: ContatoViewModel
 ) {
     var nome by remember { mutableStateOf(nomeCtt) }
     var numeroTelefone by remember { mutableStateOf(numeroCtt) }
