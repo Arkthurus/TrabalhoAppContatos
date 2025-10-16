@@ -46,9 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
-import com.example.telasparcial.viewmodel.ContatoViewModel
-import com.example.telasparcial.viewmodel.GrupoContatoViewModel
-import com.example.telasparcial.viewmodel.GrupoViewModel
+import com.example.telasparcial.ui.viewmodel.ContatoViewModel
+import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
+import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 

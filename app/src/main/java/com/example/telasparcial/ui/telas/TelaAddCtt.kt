@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.telasparcial.data.entities.Contato
-import com.example.telasparcial.viewmodel.ContatoViewModel
+import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,12 +77,12 @@ fun AddCtt(
         // Botão para salvar
         Button(
             onClick = {
-                // Chama a função de salvamento, passando o nome e o número
-                // A tela não sabe o que vai acontecer, apenas que a ação foi concluída
+                // Excluir essa logica(ViewModel vai cuidar disso)
                 if (name.isNotBlank() && phoneNumber.isNotBlank()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         contatoViewModel.addContato(Contato(nome = name, numero = phoneNumber))
                     }
+                    //Pode manter esse Lambda(ele só n vai mais receber nada por parametro no NAV)
                     onSaveContact(name, phoneNumber)
                 }
             },

@@ -61,10 +61,10 @@ fun AppNav() {
             val numeroCtt = backStackEntry.arguments?.getString("numeroCtt") ?: ""
 
             AddCtt(
+                //Manter isso
                 numeroCtt = numeroCtt,
                 onSaveContact = { name, number ->
                     println("Contato a ser salvo: Nome: $name, Número: $number")
-
                     navController.popBackStack()
                 }
             )
