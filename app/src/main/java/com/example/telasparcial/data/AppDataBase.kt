@@ -16,19 +16,19 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun contatosDAO(): ContatosDAO
 
-    abstract fun  grupoDAO(): GrupoDAO
+    abstract fun grupoDAO(): GrupoDAO
 
-    abstract fun  gruposContatosDAO(): GrupoContatoDAO
+    abstract fun gruposContatosDAO(): GrupoContatoDAO
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-        fun getDatabase(context: Context): AppDatabase{
+        fun getDatabase(context: Context): AppDatabase {
             val tempInstance = INSTANCE
-            if(tempInstance != null){
+            if (tempInstance != null) {
                 return tempInstance
-            }else{
-                synchronized(this){
+            } else {
+                synchronized(this) {
                     val instance = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
