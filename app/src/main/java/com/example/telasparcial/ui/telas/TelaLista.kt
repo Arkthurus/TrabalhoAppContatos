@@ -44,16 +44,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
 import com.example.telasparcial.ui.viewmodel.GrupoContatoViewModel
-import com.example.telasparcial.ui.viewmodel.GrupoViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 
 @Composable
-fun TelaLista(navController: NavController) {
+fun TelaLista(navController: NavController, contatoViewModel: ContatoViewModel) {
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
@@ -64,9 +64,9 @@ fun TelaLista(navController: NavController) {
             item { Spacer(modifier = Modifier.height(5.dp)) }
             item { FavoriteContacts(navController) }
             item { Spacer(modifier = Modifier.height(10.dp)) }
-            item { RecentContactsList(navController) }
+            item { RecentContactsList(navController, contatoViewModel) }
             item { Spacer(modifier = Modifier.height(15.dp)) }
-            item { DuploCtt(navController) }
+            item { DuploCtt(navController, contatoViewModel) }
         }
 
     }
@@ -162,9 +162,9 @@ private fun FavoriteContacts(
 @Composable
 private fun RecentContactsList(
     navController: NavController,
-    contatoViewModel: ContatoViewModel = hiltViewModel(),
+    contatoViewModel: ContatoViewModel
 ) {
-    val contatos by contatoViewModel.contatos4.collectAsState()
+    val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Card(
         colors = CardDefaults.cardColors(
@@ -178,10 +178,11 @@ private fun RecentContactsList(
             textAlign = TextAlign.Center,
         )
         LazyColumn {
-            items(contatos) { contato ->
+            items(uiState.lista4Contatos) { contato ->
                 RecentContactCard(
                     navController,
-                    contato
+                    contato,
+                    contatoViewModel
                 )
             }
         }
@@ -191,18 +192,19 @@ private fun RecentContactsList(
 @Composable
 fun DuploCtt(
     navController: NavController,
-    viewModel: ContatoViewModel = hiltViewModel()
+    contatoViewModel: ContatoViewModel
 ) {
-    val contatos by viewModel.contatos.collectAsState()
+
+    val uiState by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column {
-        contatos.chunked(2).forEach { parDeContatos ->
+        uiState.listaDeContatos.chunked(2).forEach { parDeContatos ->
             Row(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 parDeContatos.forEach { contato ->
                     // Passe o callback 'getContatos' para o ContactsCards
-                    ContactCard(contato, navController)
+                    ContactCard(contato, navController, contatoViewModel)
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -214,11 +216,9 @@ fun DuploCtt(
 @Composable
 private fun ContactCard(
     contato: Contato,
-    navController: NavController
+    navController: NavController,
+    contatoViewModel: ContatoViewModel
 ) {
-    val grupoViewModel: GrupoViewModel = hiltViewModel()
-    val grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
-    val contatoViewModel: ContatoViewModel = hiltViewModel()
 
     val scope = rememberCoroutineScope()
 
@@ -304,12 +304,10 @@ private fun ContactCard(
 @Composable
 fun RecentContactCard(
     navController: NavController,
-    contato: Contato
+    contato: Contato,
+    contatoViewModel: ContatoViewModel
 ) {
     val scope = rememberCoroutineScope()
-    val grupoViewModel: GrupoViewModel = hiltViewModel()
-    val grupoContatoViewModel: GrupoContatoViewModel = hiltViewModel()
-    val contatoViewModel: ContatoViewModel = hiltViewModel()
 
     Column(modifier = Modifier.padding()) {
         Surface(

@@ -1,7 +1,9 @@
 package com.example.telasparcial.ui.nav
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -9,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.telasparcial.data.AppDatabase
+import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.data.entities.Grupo
 import com.example.telasparcial.data.repository.ContatosRepository
 import com.example.telasparcial.ui.telas.AddCtt
@@ -43,6 +46,8 @@ fun AppNav() {
 //        GrupoContatoRepository(AppDatabase.getDatabase(LocalContext.current).gruposContatosDAO()
 //    )
 //    )
+
+    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     NavHost(navController = navController, startDestination = "TelaLista") {
         composable("TelaLista") {
@@ -90,6 +95,7 @@ fun AppNav() {
                 numeroCtt = numeroCtt,
                 onSaveContact = { name, number ->
                     println("Contato a ser salvo: Nome: $name, Número: $number")
+                    contatoViewModel.salvarContato()
                     navController.popBackStack()
                 }
             )

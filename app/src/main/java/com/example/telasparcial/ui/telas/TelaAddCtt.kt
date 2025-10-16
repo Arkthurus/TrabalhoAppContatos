@@ -76,16 +76,7 @@ fun AddCtt(
 
         // Botão para salvar
         Button(
-            onClick = {
-                // Excluir essa logica(ViewModel vai cuidar disso)
-                if (name.isNotBlank() && phoneNumber.isNotBlank()) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        contatoViewModel.addContato(Contato(nome = name, numero = phoneNumber))
-                    }
-                    //Pode manter esse Lambda(ele só n vai mais receber nada por parametro no NAV)
-                    onSaveContact(name, phoneNumber)
-                }
-            },
+            onClick = { onSaveContact(name, phoneNumber) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Salvar Contato")

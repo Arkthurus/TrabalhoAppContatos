@@ -28,8 +28,8 @@ data class  ContatosUiState(
 ){}
 
 
-@HiltViewModel
-class ContatoViewModel @Inject constructor(private val contatosRepository: ContatosRepository): ViewModel() {
+
+class ContatoViewModel (private val contatosRepository: ContatosRepository): ViewModel() {
 
     private val _uiState = MutableStateFlow(ContatosUiState())
 
