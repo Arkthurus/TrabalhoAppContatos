@@ -16,7 +16,7 @@ interface ContatosDAO {
     @Query("SELECT * FROM Contatos")
     fun buscarTodos(): Flow<List<Contato>>
 
-    @Query("SELECT * FROM Contatos ORDER BY ROWid DESC LIMIT :quantidade")
+    @Query("SELECT * FROM Contatos ORDER BY id DESC LIMIT :quantidade")
     fun buscar(quantidade: Int): Flow<List<Contato>>
 
     @Delete

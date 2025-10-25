@@ -21,24 +21,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.telasparcial.data.entities.Contato
 import com.example.telasparcial.ui.viewmodel.ContatoViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun AddCtt(
     numeroCtt: String,
-    onSaveContact: (String, String) -> Unit,
-    contatoViewModel: ContatoViewModel = hiltViewModel()
+
+    contatoViewModel: ContatoViewModel,
+    navController: NavHostController
 ) {
     // Estado para o campo de nome
     var name by remember { mutableStateOf("") }
     // O número de telefone é passado como um parâmetro
     val phoneNumber by remember { mutableStateOf(numeroCtt) }
+
+    val uiStateCtt by contatoViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -77,15 +78,10 @@ fun AddCtt(
         // Botão para salvar
         Button(
             onClick = {
-                // Excluir essa logica(ViewModel vai cuidar disso)
-                if (name.isNotBlank() && phoneNumber.isNotBlank()) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        contatoViewModel.addContato(Contato(nome = name, numero = phoneNumber))
-                    }
-                    //Pode manter esse Lambda(ele só n vai mais receber nada por parametro no NAV)
-                    onSaveContact(name, phoneNumber)
-                }
-            },
+                var contatoAdd = Contato(nome = name, numero = phoneNumber)
+                contatoViewModel.salvarContato(contatoAdd)
+                navController.popBackStack()
+                },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Salvar Contato")
